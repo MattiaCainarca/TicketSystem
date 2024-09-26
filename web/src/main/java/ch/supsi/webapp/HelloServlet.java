@@ -1,7 +1,6 @@
 package ch.supsi.webapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,19 +17,22 @@ public class HelloServlet extends HttpServlet {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Ticket ticket = null;
-        if (req.getContentType().equals("application/json"))
+        if (req.getContentType().equals("application/json")) {
             ticket = mapper.readValue(req.getReader(), Ticket.class);
-        else if (req.getContentType().equals("application/x-www-form-urlencoded")) {
+            tickets.add(ticket);
+            resp.setContentType(req.getContentType());
+            resp.getWriter().write(mapper.writeValueAsString(tickets));
+        } else if (req.getContentType().equals("application/x-www-form-urlencoded")) {
             ticket = new Ticket(req.getParameter("title"),
                     req.getParameter("description"),
                     req.getParameter("author"));
+            tickets.add(ticket);
+            resp.setContentType(req.getContentType());
+            resp.getWriter().write(mapper.writeValueAsString(tickets));
         } else
             resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-        tickets.add(ticket);
-        resp.setContentType(req.getContentType());
-        resp.getWriter().write(mapper.writeValueAsString(tickets));
     }
 
     @Override

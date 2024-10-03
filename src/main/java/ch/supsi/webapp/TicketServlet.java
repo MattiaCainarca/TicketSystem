@@ -124,7 +124,7 @@ public class TicketServlet extends HttpServlet {
         int index = getTicketIndexFromPath(pathInfo, resp);
         if (index != -1) {
             tickets.remove(index);
-            resp.getWriter().write("{\"message\": \"Ticket deleted successfully.\"}");
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
         }
     }
 

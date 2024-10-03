@@ -18,17 +18,21 @@ This REST API allows clients to manage tickets, which include a title, descripti
     "description": "Detailed description of the ticket",
     "author": "Author Name"
 }
-
+```
+## Success Response
 **Code** : `201 CREATED`
-
+```json
 {
   "title": "Ticket Title",
   "description": "Detailed description of the ticket",
   "author": "Author Name"
 }
-
+```
+## Error Response
 **Code** : `400 BAD REQUEST`
-
+**Condition** : If some fields are missing.
+```json
 {
   "error": "Missing required fields: title, description, author"
 }
+```

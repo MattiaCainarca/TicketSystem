@@ -42,7 +42,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
 - **URL** : `/tickets`
 - **Description**: Retrieves a list of all tickets.
 - **Request Headers**:
-    - `Accept`: `application/json`
+    - `Content-Type`: `application/json`
 - ### Success Response
     **Code** : `200 OK`  
     ```json
@@ -65,7 +65,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
 - **URL** : `/tickets/{id}`
 - **Description**: Retrieves a specific ticket by ID.
 - **Request Headers**:
-    - `Accept`: `application/json`
+    - `Content-Type`: `application/json`
 - ### Success Response
     **Code** : `200 OK`
     ```json
@@ -76,6 +76,13 @@ This REST API allows clients to manage tickets, which include a title, descripti
     }
     ```
 - ### Error Response
+  **Code** : `400 BAD REQUEST`  
+  **Condition** : If ID is invalid (e.g., Format Error).
+  ```json
+    {
+        "error": "Invalid ticket ID."
+    }
+  ```
   **Code** : `404 NOT FOUND`  
   **Condition** : If ID does not exist.
   ```json
@@ -89,7 +96,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
 - **URL** : `/tickets/{id}`
 - **Description**: Updates an entire ticket with new data.
 - **Request Headers**:
-    - `Accept`: `application/json`
+    - `Content-Type`: `application/json`
 - **Request Body (application/json)**:
     ```json
     {
@@ -115,7 +122,14 @@ This REST API allows clients to manage tickets, which include a title, descripti
         "error": "Invalid data for updating the ticket."
     }
   ```
-
+  **Code** : `404 NOT FOUND`  
+  **Condition** : If ID does not exist.
+  ```json
+    {
+        "error": "Ticket not found."
+    }
+  ```
+  
 ## 5. Delete a Ticket.
 - **Method** : `DELETE`
 - **URL** : `/tickets/{id}`
@@ -130,6 +144,13 @@ This REST API allows clients to manage tickets, which include a title, descripti
     }
     ```
 - ### Error Response
+  **Code** : `400 BAD REQUEST`  
+  **Condition** : Invalid or incomplete data.
+  ```json
+    {
+        "error": "Invalid data for updating the ticket."
+    }
+  ```
   **Code** : `404 NOT FOUND`  
   **Condition** : If ID does not exist.
   ```json

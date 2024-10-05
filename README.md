@@ -1,7 +1,9 @@
 # Ticket Management REST API
 
 ## Description
-This REST API allows clients to manage tickets, which include a title, description, and author. 
+This REST API allows clients to manage tickets, which include a title, description, and author.
+
+## Base URL : `/ticket`
 
 ## URIs
 
@@ -91,7 +93,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
     }
   ```
 
-## 4. Update a Ticket.
+## 4. Update a Ticket
 - **Method** : `PUT`
 - **URL** : `/tickets/{id}`
 - **Description**: Updates an entire ticket with new data.
@@ -130,7 +132,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
     }
   ```
   
-## 5. Delete a Ticket.
+## 5. Delete a Ticket
 - **Method** : `DELETE`
 - **URL** : `/tickets/{id}`
 - **Description**: Deletes a specific ticket by ID.
@@ -149,6 +151,45 @@ This REST API allows clients to manage tickets, which include a title, descripti
   ```json
     {
         "error": "Invalid data for updating the ticket."
+    }
+  ```
+  **Code** : `404 NOT FOUND`  
+  **Condition** : If ID does not exist.
+  ```json
+    {
+        "error": "Ticket not found."
+    }
+  ```
+
+## 6. Partial Update a Ticket (PATCH)
+- **Method** : `PATCH`
+- **URL** : `/tickets/{id}`
+- **Description**: Partially updates an existing ticket.
+- **Request Headers**:
+  - `Content-Type`: `application/json`
+- **Request Body (application/json) - _Optional fields for partial update_**:
+    ```json
+    {
+        "title": "Partially updated Title",
+        "description": "Partially updated Description",
+        "author": "Partially updated Author"
+    }
+    ```
+- ### Success Response
+  **Code** : `200 OK`
+    ```json
+    {
+        "title": "Updated Title",
+        "description": "Updated Description",
+        "author": "Updated Author"
+    }
+    ```
+- ### Error Response
+  **Code** : `400 BAD REQUEST`  
+  **Condition** : Invalid or incomplete data.
+  ```json
+    {
+        "error": "Invalid data for partial ticket update."
     }
   ```
   **Code** : `404 NOT FOUND`  

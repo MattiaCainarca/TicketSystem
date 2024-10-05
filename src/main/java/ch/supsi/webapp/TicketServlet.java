@@ -2,6 +2,7 @@ package ch.supsi.webapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +18,18 @@ public class TicketServlet extends HttpServlet {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getMethod().equalsIgnoreCase("PATCH"))
+            doPatch(req, resp);
+        else
+            super.service(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Ticket ticket;
         if (req.getContentType().equals("application/json")) {
             try {
-                ticket = mapper.readValue(req.getReader(), Ticket.class);
+                Ticket ticket = mapper.readValue(req.getReader(), Ticket.class);
                 tickets.add(ticket);
                 resp.setStatus(HttpServletResponse.SC_CREATED); // 201 Created
                 resp.setContentType(req.getContentType());
@@ -37,7 +45,7 @@ public class TicketServlet extends HttpServlet {
             String author = req.getParameter("author");
 
             if (title != null && description != null && author != null) {
-                ticket = new Ticket(title, description, author);
+                Ticket ticket = new Ticket(title, description, author);
                 tickets.add(ticket);
                 resp.setStatus(HttpServletResponse.SC_CREATED); // 201 Created
                 resp.setContentType("application/json");
@@ -89,13 +97,9 @@ public class TicketServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-            resp.setContentType("application/json");
-            resp.getWriter().write("{\"error\": \"Ticket ID is required for update.\"}");
+        String pathInfo = checkPathInfo(req, resp, "{\"error\": \"Ticket ID is required for update.\"}");
+        if (pathInfo == null)
             return;
-        }
         int index = getTicketIndexFromPath(pathInfo, resp);
         if (index != -1) {
             try {
@@ -114,13 +118,9 @@ public class TicketServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-            resp.setContentType("application/json");
-            resp.getWriter().write("{\"error\": \"Ticket ID is required for deletion.\"}");
+        String pathInfo = checkPathInfo(req, resp, "{\"error\": \"Ticket ID is required for deletion.\"}");
+        if (pathInfo == null)
             return;
-        }
         int index = getTicketIndexFromPath(pathInfo, resp);
         if (index != -1) {
             tickets.remove(index);
@@ -128,5 +128,40 @@ public class TicketServlet extends HttpServlet {
         }
     }
 
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pathInfo = checkPathInfo(req, resp, "{\"error\": \"Ticket ID is required for partial update.\"}");
+        if (pathInfo == null)
+            return;
+        int index = getTicketIndexFromPath(pathInfo, resp);
+        if (index != -1) {
+            Ticket existingTicket = tickets.get(index);
+            try {
+                Ticket partialUpdate = mapper.readValue(req.getReader(), Ticket.class);
+                if (partialUpdate.getTitle() != null)
+                    existingTicket.setTitle(partialUpdate.getTitle());
+                if (partialUpdate.getDescription() != null)
+                    existingTicket.setDescription(partialUpdate.getDescription());
+                if (partialUpdate.getAuthor() != null)
+                    existingTicket.setAuthor(partialUpdate.getAuthor());
+                resp.setStatus(HttpServletResponse.SC_OK); // 200 OK
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString(existingTicket));
+            } catch (UnrecognizedPropertyException e) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+                resp.setContentType("application/json");
+                resp.getWriter().write("{\"error\": \"Invalid data for partial update.\"}");
+            }
+        }
+    }
 
+    private static String checkPathInfo(HttpServletRequest req, HttpServletResponse resp, String s) throws IOException {
+        String pathInfo = req.getPathInfo();
+        if (pathInfo == null || pathInfo.equals("/")) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+            resp.setContentType("application/json");
+            resp.getWriter().write(s);
+            return null;
+        }
+        return pathInfo;
+    }
 }

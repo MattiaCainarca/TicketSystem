@@ -25,6 +25,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
     **Code** : `201 CREATED`
     ```json
     {
+        "id": "21f432f5-b513-4e17-87e5-08e1ed17876a",
         "title": "Ticket Title",
         "description": "Detailed description of the ticket",
         "author": "Author Name"
@@ -50,11 +51,13 @@ This REST API allows clients to manage tickets, which include a title, descripti
     ```json
     [
       {
+          "id": "fbee89fb-a03f-4228-8f2f-28543688d23f",
           "title": "Ticket 1",
           "description": "Description 1",
           "author": "Author 1"
       },
       {
+          "id": "21f432f5-b513-4e17-87e5-08e1ed17876a",
           "title": "Ticket 2",
           "description": "Description 2",
           "author": "Author 2"
@@ -72,19 +75,13 @@ This REST API allows clients to manage tickets, which include a title, descripti
     **Code** : `200 OK`
     ```json
     {
+        "id": "21f432f5-b513-4e17-87e5-08e1ed17876a",
         "title": "Ticket Title",
         "description": "Ticket Description",
         "author": "Author Name"
     }
     ```
 - ### Error Response
-  **Code** : `400 BAD REQUEST`  
-  **Condition** : If ID is invalid (e.g., Format Error).
-  ```json
-    {
-        "error": "Invalid ticket ID."
-    }
-  ```
   **Code** : `404 NOT FOUND`  
   **Condition** : If ID does not exist.
   ```json
@@ -104,13 +101,14 @@ This REST API allows clients to manage tickets, which include a title, descripti
     {
         "title": "Updated Title",
         "description": "Updated Description",
-      "author": "Updated Author"
+        "author": "Updated Author"
     }
     ```
 - ### Success Response
   **Code** : `200 OK`
     ```json
     {
+        "id": "fbee89fb-a03f-4228-8f2f-28543688d23f",
         "title": "Updated Title",
         "description": "Updated Description",
         "author": "Updated Author"
@@ -179,6 +177,7 @@ This REST API allows clients to manage tickets, which include a title, descripti
   **Code** : `200 OK`
     ```json
     {
+        "id": "fbee89fb-a03f-4228-8f2f-28543688d23f",
         "title": "Updated Title",
         "description": "Updated Description",
         "author": "Updated Author"

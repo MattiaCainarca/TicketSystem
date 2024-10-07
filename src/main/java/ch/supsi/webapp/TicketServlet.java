@@ -78,21 +78,14 @@ public class TicketServlet extends HttpServlet {
     }
 
     private int getTicketIndexFromPath(String pathInfo, HttpServletResponse resp) throws IOException {
-        try {
-            String[] pathParts = pathInfo.split("/");
-            int index = Integer.parseInt(pathParts[1]);
-            if (index >= 0 && index < tickets.size()) {
-                return index;
-            } else {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND); // 404 Not Found
-                resp.getWriter().write("{\"error\": \"Ticket not found.\"}");
-                return -1;
-            }
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-            resp.getWriter().write("{\"error\": \"Invalid ticket ID.\"}");
-            return -1;
-        }
+        String[] pathParts = pathInfo.split("/");
+        String id = pathParts[1];
+        for (int i = 0; i < tickets.size(); i++)
+            if (tickets.get(i).getId().equals(id))
+                return i;
+        resp.setStatus(HttpServletResponse.SC_NOT_FOUND); // 404 Not Found
+        resp.getWriter().write("{\"error\": \"Ticket not found.\"}");
+        return -1;
     }
 
     @Override
@@ -124,7 +117,7 @@ public class TicketServlet extends HttpServlet {
         int index = getTicketIndexFromPath(pathInfo, resp);
         if (index != -1) {
             tickets.remove(index);
-            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT); // 204 NO CONTENT
         }
     }
 

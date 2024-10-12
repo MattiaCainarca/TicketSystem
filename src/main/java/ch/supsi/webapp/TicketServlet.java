@@ -27,34 +27,21 @@ public class TicketServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (req.getContentType().equals("application/json")) {
+        if (req.getContentType().equals("application/json"))
             try {
-                Ticket ticket = mapper.readValue(req.getReader(), Ticket.class);
-                tickets.add(ticket);
-                resp.setStatus(HttpServletResponse.SC_CREATED); // 201 Created
-                resp.setContentType(req.getContentType());
-                resp.getWriter().write(mapper.writeValueAsString(tickets));
+                created(resp, mapper.readValue(req.getReader(), Ticket.class));
             } catch (UnrecognizedPropertyException e) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-                resp.setContentType("application/json");
-                resp.getWriter().write("{\"error\": \"Invalid or missing fields: title, description, author\"}");
+                badRequest(resp, "Invalid or missing fields: title, description, author.");
             }
-        } else if (req.getContentType().equals("application/x-www-form-urlencoded")) {
+        else if (req.getContentType().equals("application/x-www-form-urlencoded")) {
             String title = req.getParameter("title");
             String description = req.getParameter("description");
             String author = req.getParameter("author");
 
-            if (title != null && description != null && author != null) {
-                Ticket ticket = new Ticket(title, description, author);
-                tickets.add(ticket);
-                resp.setStatus(HttpServletResponse.SC_CREATED); // 201 Created
-                resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(tickets));
-            } else {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-                resp.setContentType("application/json");
-                resp.getWriter().write("{\"error\": \"Missing required fields: title, description, author\"}");
-            }
+            if (title != null && description != null && author != null)
+                created(resp, new Ticket(title, description, author));
+            else
+                badRequest(resp, "Missing required fields: title, description, author.");
         } else {
             resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE); // 415 Unsupported Media Type
             resp.setContentType("application/json");
@@ -64,16 +51,12 @@ public class TicketServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
-        resp.setContentType("application/json");
-        if (pathInfo == null || pathInfo.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_OK); // 200 OK
-            resp.getWriter().write(mapper.writeValueAsString(tickets));
-        } else {
+        if (pathInfo == null || pathInfo.equals("/"))
+            success(resp, tickets);
+        else {
             int index = getTicketIndexFromPath(pathInfo, resp);
-            if (index != -1) {
-                resp.setStatus(HttpServletResponse.SC_OK); // 200 OK
-                resp.getWriter().write(mapper.writeValueAsString(tickets.get(index)));
-            }
+            if (getTicketIndexFromPath(pathInfo, resp) != -1)
+                success(resp, tickets.get(index));
         }
     }
 
@@ -94,19 +77,14 @@ public class TicketServlet extends HttpServlet {
         if (pathInfo == null)
             return;
         int index = getTicketIndexFromPath(pathInfo, resp);
-        if (index != -1) {
+        if (index != -1)
             try {
                 Ticket updatedTicket = mapper.readValue(req.getReader(), Ticket.class);
                 tickets.set(index, updatedTicket);
-                resp.setStatus(HttpServletResponse.SC_OK); // 200 OK
-                resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(tickets.get(index)));
+                success(resp, tickets.get(index));
             } catch (UnrecognizedPropertyException e) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-                resp.setContentType("application/json");
-                resp.getWriter().write("{\"error\": \"Invalid data for updating the ticket.\"}");
+                badRequest(resp, "Invalid data for updating the ticket.");
             }
-        }
     }
 
     @Override
@@ -136,13 +114,9 @@ public class TicketServlet extends HttpServlet {
                     existingTicket.setDescription(partialUpdate.getDescription());
                 if (partialUpdate.getAuthor() != null)
                     existingTicket.setAuthor(partialUpdate.getAuthor());
-                resp.setStatus(HttpServletResponse.SC_OK); // 200 OK
-                resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(existingTicket));
+                success(resp, existingTicket);
             } catch (UnrecognizedPropertyException e) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-                resp.setContentType("application/json");
-                resp.getWriter().write("{\"error\": \"Invalid data for partial update.\"}");
+                badRequest(resp, "Invalid data for partial update.");
             }
         }
     }
@@ -150,11 +124,28 @@ public class TicketServlet extends HttpServlet {
     private static String checkPathInfo(HttpServletRequest req, HttpServletResponse resp, String s) throws IOException {
         String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
-            resp.setContentType("application/json");
-            resp.getWriter().write(s);
+            badRequest(resp, s);
             return null;
         }
         return pathInfo;
+    }
+
+    private void success(HttpServletResponse resp, Object obj) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_OK); // 200 OK
+        resp.setContentType("application/json");
+        resp.getWriter().write(mapper.writeValueAsString(obj));
+    }
+
+    private void created(HttpServletResponse resp, Ticket ticket) throws IOException {
+        tickets.add(ticket);
+        resp.setStatus(HttpServletResponse.SC_CREATED); // 201 Created
+        resp.setContentType("application/json");
+        resp.getWriter().write(mapper.writeValueAsString(tickets));
+    }
+
+    private static void badRequest(HttpServletResponse resp, String message) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+        resp.setContentType("application/json");
+        resp.getWriter().write("{\"error\": " + message + "}");
     }
 }

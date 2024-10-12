@@ -55,7 +55,7 @@ public class TicketServlet extends HttpServlet {
             success(resp, tickets);
         else {
             int index = getTicketIndexFromPath(pathInfo, resp);
-            if (getTicketIndexFromPath(pathInfo, resp) != -1)
+            if (index != -1)
                 success(resp, tickets.get(index));
         }
     }

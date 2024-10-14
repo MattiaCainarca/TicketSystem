@@ -1,21 +1,17 @@
-package ch.supsi.webapp;
+package ch.supsi.webapp.tickets;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
 public class Ticket {
     private String id;
     private String title;
     private String description;
     private String author;
-
-    public Ticket() {
-        this.id = UUID.randomUUID().toString();
-    }
 
     public Ticket(String title, String description, String author) {
         this.id = UUID.randomUUID().toString();

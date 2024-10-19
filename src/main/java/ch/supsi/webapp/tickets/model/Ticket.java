@@ -1,4 +1,4 @@
-package ch.supsi.webapp.tickets;
+package ch.supsi.webapp.tickets.model;
 
 import lombok.Getter;
 import lombok.Setter;

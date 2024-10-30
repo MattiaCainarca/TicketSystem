@@ -4,51 +4,65 @@
     <meta charset="UTF-8">
     <title>Home - Ticket Management</title>
     <meta name="author" content="Cainarca Mattia">
-    <meta name="description" content="Home page of the Ticket System, listing tickets and providing navigation to other sections.">
+    <meta name="description"
+          content="Home page of the Ticket System, listing tickets and providing navigation to other sections.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+    <link rel="stylesheet" type="text/css" href="../CSS/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <img src="images/logo.png" alt="Ticket System Logo" width="50">
-    </header>
+<header>
+    <img src="images/logo.png" alt="Ticket System Logo" width="75">
+    <h1>Ticket Handler</h1>
+</header>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="createTicketForm.html">Create a Ticket</a></li>
-        </ul>
-    </nav>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="createTicketForm.html">Create a Ticket</a>
+</nav>
 
-    <main>
-        <section>
-            <article>
-                <h2><a href="ticket1Details.html">Ticket 1</a></h2>
-                <p><strong>Created on: </strong><time datetime="2024-10-22">2024-10-22</time></p>
-                <p><strong>Status:</strong> Open</p>
-                <p>Description: This is a sample ticket...</p>
-            </article>
-            <article>
-                <h2><a href="ticket2Details.html">Ticket 2</a></h2>
-                <p><strong>Created on: </strong><time datetime="2024-10-22">2024-10-22</time></p>
-                <p><strong>Status:</strong> Open</p>
-                <p>Description: This is a sample ticket...</p>
-            </article>
-            <article>
-                <h2><a href="ticket3Details.html">Ticket 3</a></h2>
-                <p><strong>Created on: </strong> <time datetime="2024-10-22">2024-10-22</time></p>
-                <p><strong>Status:</strong> Open</p>
-                <p>Description: This is a sample ticket...</p>
-            </article>
-        </section>
-    </main>
-
+<main class="main-home">
+    <section class="articles-list">
+        <p class="sub-title">Open a ticket to see its details</p>
+        <article>
+            <p class="article-title">Ticket 1:</p>
+            <p><strong>Created on: </strong>
+                <time datetime="2024-10-22">2024-10-22</time>
+            </p>
+            <p><strong>Status:</strong> Open</p>
+            <p><strong>Description:</strong> This is a sample ticket...</p>
+            <a href="ticket1Details.html" class="primary-button">Open Detail</a>
+        </article>
+        <article>
+            <p class="article-title">Ticket 2:</p>
+            <p><strong>Created on: </strong>
+                <time datetime="2024-10-22">2024-10-22</time>
+            </p>
+            <p><strong>Status:</strong> Open</p>
+            <p><strong>Description:</strong> This is a sample ticket...</p>
+            <a href="ticket2Details.html" class="primary-button">Open Detail</a>
+        </article>
+        <article>
+            <p class="article-title">Ticket 3:</p>
+            <p><strong>Created on: </strong>
+                <time datetime="2024-10-22">2024-10-22</time>
+            </p>
+            <p><strong>Status:</strong> Open</p>
+            <p><strong>Description:</strong> This is a sample ticket...</p>
+            <a href="ticket3Details.html" class="primary-button">Open Detail</a>
+        </article>
+    </section>
     <aside>
         <h3>Sidebar Content</h3>
         <p>This is the sidebar content.</p>
     </aside>
+</main>
 
-    <footer>
-        <small>Copyleft CC-by <time datetime="2023">2023</time> by Cainarca</small>
-    </footer>
+<footer>
+    <small>Copyleft CC-by
+        <time datetime="2023">2023</time>
+        by Cainarca</small>
+</footer>
 </body>
 </html>

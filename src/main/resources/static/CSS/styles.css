@@ -1,0 +1,176 @@
+body {
+    background-color: #212529;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+nav {
+    margin-top: 10px;
+    margin-left: 10px;
+    display: flex;
+    column-gap: 15px;
+    align-items: center;
+}
+
+nav > a {
+    color: white;
+    padding-left: 10px;
+    border-left: 1px solid white;
+}
+
+aside {
+    position: sticky;
+    top: 10px;
+    align-self: start;
+    padding-left: 10px;
+}
+
+.main-home {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    column-gap: 10px;
+}
+
+.sub-title {
+    font-size: 25px;
+}
+
+.articles-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 15px;
+    padding: 10px;
+    border-right: 1px solid dimgrey;
+}
+
+.articles-list > p {
+    grid-column: 1 / -1;
+}
+
+.articles-list > article {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #343a40;
+    border-radius: 15px;
+}
+
+.article-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #0d6efd;
+    font-size: 32px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.primary-button {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    align-self: center;
+}
+
+.primary-button:hover {
+    background-color: #0056b3;
+}
+
+footer {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.main-article-details {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ticket-details {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+.ticket-details th, .ticket-details td {
+    padding: 20px;
+}
+
+.ticket-details th {
+    background-color: #343a40;
+    font-weight: bold;
+    text-align: left;
+}
+
+.ticket-details td {
+    background-color: #495057;
+}
+
+.main-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-form > form {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    background-color: #343a40;
+    padding: 30px;
+    border-radius: 15px;
+}
+
+form > label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+form > input[type="text"], input[type="date"], select, textarea {
+    width: 50%;
+    background-color: #495057;
+    color: white;
+    padding: 10px;
+    border: 1px solid #343a40;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+form > textarea {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+option:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+    nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 20px;
+    }
+
+    .articles-list {
+        display: grid;
+        grid-template-columns: 1fr !important;
+    }
+}

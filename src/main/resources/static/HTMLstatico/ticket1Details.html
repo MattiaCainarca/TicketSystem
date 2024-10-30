@@ -5,37 +5,53 @@
     <title>Tickets Handler</title>
     <meta name="author" content="Cainarca Mattia">
     <meta name="description" content="Ticket System, list ticket and provide information about it.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+    <link rel="stylesheet" type="text/css" href="../CSS/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <img src="images/logo.png" alt="Ticket System Logo" width="50">
-        <h1>Ticket 1 Details</h1>
-    </header>
+<header>
+    <img src="images/logo.png" alt="Ticket System Logo" width="75">
+    <h1>Ticket Details</h1>
+</header>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="createTicketForm.html">Create a Ticket</a></li>
-        </ul>
-    </nav>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="createTicketForm.html">Create a Ticket</a>
+</nav>
 
-    <main>
-        <h2>Title: Example Ticket Title</h2>
+<main class="main-article-details">
+    <p class="article-title">Ticket 1</p>
+    <table class="ticket-details">
+        <tr>
+            <th>Author</th>
+            <td>John Doe</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>
+                <time datetime="2024-10-26">2024-10-26</time>
+            </td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>In Progress</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>This is a description of the ticket. It contains all the necessary information and context about the
+                issue, task, or request.
+            </td>
+        </tr>
+    </table>
+    <a href="index.html" class="primary-button">Back to Ticket List</a>
+</main>
 
-        <p><strong>Author:</strong> John Doe</p>
-
-        <p><strong>Date: </strong><time datetime="2024-10-26">2024-10-26</time></p>
-
-        <p><strong>Status:</strong> In Progress</p>
-
-        <h3>Description:</h3>
-        <p>This is a description of the ticket. It contains all the necessary information and context about the issue, task, or request.</p>
-
-        <a href="index.html">Back to Ticket List</a>
-    </main>
-
-    <footer>
-        <small>Copyleft CC-by <time datetime="2023">2023</time> by Cainarca</small>
-    </footer>
+<footer>
+    <small>Copyleft CC-by
+        <time datetime="2023">2023</time>
+        by Cainarca</small>
+</footer>
 </body>
 </html>

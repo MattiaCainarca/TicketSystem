@@ -40,6 +40,8 @@ aside {
 
 .sub-title {
     font-size: 25px;
+    font-style: italic;
+    text-align: center;
 }
 
 .articles-list {
@@ -69,7 +71,6 @@ aside {
     color: #0d6efd;
     font-size: 32px;
     font-weight: bold;
-    text-decoration: underline;
 }
 
 .primary-button {
@@ -130,9 +131,9 @@ footer {
 }
 
 .main-form > form {
+    width: 40%;
     display: flex;
     flex-direction: column;
-    align-items: start;
     background-color: #343a40;
     padding: 30px;
     border-radius: 15px;
@@ -144,7 +145,8 @@ form > label {
 }
 
 form > input[type="text"], input[type="date"], select, textarea {
-    width: 50%;
+    box-sizing: border-box;
+    width: 100%;
     background-color: #495057;
     color: white;
     padding: 10px;
@@ -154,7 +156,7 @@ form > input[type="text"], input[type="date"], select, textarea {
 }
 
 form > textarea {
-    width: 100%;
+    resize: vertical;
     margin-bottom: 20px;
 }
 

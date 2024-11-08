@@ -16,6 +16,8 @@ nav {
     display: flex;
     column-gap: 15px;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 nav > a {
@@ -156,7 +158,7 @@ form > input[type="text"], input[type="date"], select, textarea {
 }
 
 form > textarea {
-    resize: vertical;
+    resize: block;
     margin-bottom: 20px;
 }
 
@@ -165,12 +167,6 @@ option:hover {
 }
 
 @media (max-width: 600px) {
-    nav {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        row-gap: 20px;
-    }
-
     .articles-list {
         display: grid;
         grid-template-columns: 1fr !important;

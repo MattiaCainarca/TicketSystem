@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -18,6 +19,10 @@ public class Ticket {
     @Column()
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Type type;
+
     @Column(columnDefinition = "TEXT")
     private String description;
 
@@ -30,18 +35,19 @@ public class Ticket {
     private Status status;
 
     @Column()
-    private LocalDateTime createdDate;
+    private Date createdDate;
 
     public Ticket() {
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = new Date();
         this.status = Status.OPEN;
     }
 
-    public Ticket(String title, String description, User user) {
+    public Ticket(String title, Type type, String description, User user) {
         this.title = title;
+        this.type = type;
         this.description = description;
         this.user = user;
-        this.createdDate = LocalDateTime.now();
+        this.createdDate = new Date();
         this.status = Status.OPEN;
     }
 }

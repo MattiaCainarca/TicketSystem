@@ -1,50 +1,85 @@
 package ch.supsi.webapp.tickets.controller;
 
+import ch.supsi.webapp.tickets.model.Status;
 import ch.supsi.webapp.tickets.model.Ticket;
+import ch.supsi.webapp.tickets.model.Type;
+import ch.supsi.webapp.tickets.model.User;
 import ch.supsi.webapp.tickets.service.TicketService;
+import ch.supsi.webapp.tickets.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Optional;
-
-@RestController
-@RequestMapping("/tickets")
+@Controller
 public class TicketController {
     private final TicketService ticketService;
+    private final UserService userService;
 
     @Autowired
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService, UserService userService) {
         this.ticketService = ticketService;
+        this.userService = userService;
     }
 
-    @PostMapping("")
-    public ResponseEntity<Ticket> postTicket(@RequestBody Ticket newTicket) {
-        Ticket createdTicket = ticketService.create(newTicket);
-        return new ResponseEntity<>(createdTicket, HttpStatus.CREATED);
+    @GetMapping("/")
+    public String index(Model model){
+        model.addAttribute("tickets", ticketService.findAll());
+        return "index";
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        return new ResponseEntity<>(ticketService.findAll(), HttpStatus.OK);
+    @GetMapping("/ticket/{id}")
+    public String ticketDetails(@PathVariable("id") Long id, Model model){
+        model.addAttribute("ticket", ticketService.findById(id));
+        return "ticketDetails";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
-        Optional<Ticket> ticket = ticketService.getOne(id);
-        return ticket.isPresent() ? new ResponseEntity<>(ticket.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/ticket/new")
+    public String createTicketForm(Model model) {
+        model.addAttribute("ticket", new Ticket());
+        model.addAttribute("types", Type.values());
+        model.addAttribute("users", userService.findAll());
+        return "createTicketForm";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket updatedTicket) {
-        return ticketService.update(id, updatedTicket) != null ? ResponseEntity.ok(updatedTicket) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    @PostMapping("/ticket/new")
+    public String createTicket(@ModelAttribute Ticket ticket, @RequestParam Long userId) {
+        User user = userService.findById(userId);
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+        ticket.setUser(user);
+        ticketService.create(ticket);
+        return "redirect:/";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
-        return ticketService.delete(id) ? ResponseEntity.ok().build() : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/ticket/{id}/edit")
+    public String editTicketForm(@PathVariable Long id, Model model) {
+        Ticket ticket = ticketService.findById(id);
+        if (ticket == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found!");
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("types", Type.values());
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("users", userService.findAll());
+        return "editTicket";
+    }
+
+    @PostMapping("/ticket/{id}/edit")
+    public String editTicket(@PathVariable Long id, @ModelAttribute Ticket ticket, @RequestParam Long userId) {
+        User user = userService.findById(userId);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+        }
+        ticket.setUser(user);
+        ticketService.update(id, ticket);
+        return "redirect:/";
+    }
+
+    @GetMapping("/ticket/{id}/delete")
+    public String deleteTicket(@PathVariable Long id) {
+        ticketService.delete(id);
+        return "redirect:/";
     }
 }
-

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Ticket</title>
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="description" content="Ticket System, form to create ticket.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" th:src="@{/images/logo.png}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75">
+    <h1>Create New Ticket</h1>
+</header>
+
+<nav>
+    <a th:href="@{/}">Home</a>
+</nav>
+
+<main class="main-form">
+    <p class="sub-title">Fill the form to add a new ticket</p>
+    <form th:action="@{/ticket/new}" method="post">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" th:value="${ticket.title}" required><br><br>
+
+        <label for="type">Type:</label><br>
+        <select id="type" name="type" required>
+            <option value="" disabled selected hidden>Select Type</option>
+            <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+        </select><br><br>
+
+        <label for="author">Author:</label><br>
+        <select id="author" name="userId" required>
+            <option value="" disabled selected hidden>Select Author</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+        </select><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" th:text="${ticket.description}" required></textarea>
+
+        <input type="submit" value="Create Ticket" class="primary-button">
+    </form>
+</main>
+
+<footer>
+    <small>Copyleft CC-by
+        <time datetime="2023">2023</time>
+        by Cainarca</small>
+</footer>
+</body>
+</html>

@@ -97,7 +97,8 @@ footer {
 }
 
 .main-article-details {
-    margin-top: 20px;
+    margin: auto;
+    width: 60%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -105,10 +106,14 @@ footer {
 }
 
 .ticket-details {
+    width: 100%;
     margin-top: 15px;
     margin-bottom: 15px;
-    display: grid;
-    grid-template-columns: auto 1fr;
+    display: table;
+}
+
+.ticket-details th {
+    width: 20%;
 }
 
 .ticket-details th, .ticket-details td {
@@ -123,6 +128,15 @@ footer {
 
 .ticket-details td {
     background-color: #495057;
+}
+
+.ticket-options {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: 20px 0 20px 0;
 }
 
 .main-form {

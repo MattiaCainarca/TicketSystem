@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tickets Handler</title>
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="description" content="Ticket System, list ticket and provide information about it.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" th:src="@{/images/logo.png}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75">
+    <h1>Ticket Details</h1>
+</header>
+
+<nav>
+    <a th:href="@{/}">Home</a>
+    <a th:href="@{/ticket/new}">Create a Ticket</a>
+</nav>
+
+<main class="main-article-details">
+    <p th:text="${ticket.title}" class="article-title">Ticket Title</p>
+    <table class="ticket-details">
+        <tbody>
+        <tr>
+            <th>Type</th>
+            <td th:text="${ticket.type}"></td>
+        </tr>
+        <tr>
+            <th>Author</th>
+            <td th:text="${ticket.user}"></td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>
+                <time th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy HH:mm')}"></time>
+            </td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td th:text="${ticket.status}"></td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td th:text="${ticket.description}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="ticket-options">
+        <a th:href="@{/ticket/{id}/edit(id=${ticket.id})}" class="primary-button">Edit Ticket</a>
+        <a th:href="@{/ticket/{id}/delete(id=${ticket.id})}" class="primary-button">Delete Ticket</a>
+    </div>
+    <a th:href="@{/}" class="primary-button">Back to Ticket List</a>
+</main>
+
+<footer>
+    <small>Copyleft CC-by
+        <time datetime="2023">2023</time>
+        by Cainarca</small>
+</footer>
+</body>
+</html>

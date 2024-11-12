@@ -37,6 +37,10 @@ public class Ticket {
     @Column()
     private Date createdDate;
 
+    @Column
+    @Lob
+    private byte[] attachment;
+
     public Ticket() {
         this.createdDate = new Date();
         this.status = Status.OPEN;
@@ -49,5 +53,15 @@ public class Ticket {
         this.user = user;
         this.createdDate = new Date();
         this.status = Status.OPEN;
+    }
+
+    public Ticket(String title, Type type, String description, User user, byte[] attachment) {
+        this.title = title;
+        this.type = type;
+        this.description = description;
+        this.user = user;
+        this.createdDate = new Date();
+        this.status = Status.OPEN;
+        this.attachment = attachment;
     }
 }

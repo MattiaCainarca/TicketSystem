@@ -1,48 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
-    <title>Home - Ticket Management</title>
     <meta name="author" content="Cainarca Mattia">
     <meta name="description"
           content="Home page of the Ticket System, listing tickets and providing navigation to other sections.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" th:src="@{/images/logo.png}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
-    <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75">
-    <h1>Ticket Handler</h1>
-</header>
 
-<nav>
-    <a th:href="@{/}">Home</a>
-    <a th:href="@{/ticket/new}">Create a Ticket</a>
-</nav>
-
-<main class="main-home">
-    <section class="articles-list">
-        <p class="sub-title">Open a ticket to see its details</p>
-        <article th:each="ticket : ${tickets}">
-            <p><span th:text="${ticket.title}" class="article-title"></span></p>
-            <p><strong>Creation Date: </strong><span th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span></p>
-            <p><strong>Status: </strong><span th:text="${ticket.status}"></span></p>
-            <p><strong>Description: </strong><span th:text="${#strings.abbreviate(ticket.description, 20)} + '...'"></span></p>
-            <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="primary-button">Open Detail</a>
-        </article>
-    </section>
-    <aside>
-        <h3>Sidebar Content</h3>
-        <p>This is the sidebar content.</p>
-    </aside>
+<main>
+    <p class="fs-1 fw-bold">Ticket Handler</p>
+    <div class="row">
+        <section class="col-lg-9">
+            <div class="container text-center mt-3">
+                <p class="fs-2 fw-semibold">Available Tickets</p>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col" th:each="ticket : ${tickets}">
+                        <article class="card text-bg-dark">
+                            <div class="card-header text-uppercase"
+                                 th:classappend="${ticket.status.name() == 'OPEN' ? 'bg-danger' :
+                                 (ticket.status.name() == 'IN_PROGRESS' ? 'bg-warning' :
+                                  (ticket.status.name() == 'DONE' ? 'bg-success' :
+                                   (ticket.status.name() == 'CLOSED' ? 'bg-primary' : 'bg-secondary')))}">
+                                <strong><span th:text="${ticket.title}"></span></strong>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Creation Date: </strong><span
+                                        th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span></p>
+                                <p><strong>Status: </strong><span th:text="${ticket.status}"></span></p>
+                                <p class="text-truncate"><strong>Description: </strong><span
+                                        th:text="${ticket.description}"></span></p>
+                                <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm">Open
+                                    Detail</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <aside class="col-lg d-lg-flex flex-column p-3">
+            <p class="fs-2 fw-semibold">Sidebar Content</p>
+            <p>This is the sidebar content.</p>
+        </aside>
+    </div>
 </main>
-
-<footer>
-    <small>Copyleft CC-by
-        <time datetime="2023">2023</time>
-        by Cainarca</small>
-</footer>
 </body>
 </html>

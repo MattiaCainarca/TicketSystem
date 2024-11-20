@@ -1,67 +1,105 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
     <title>Create New Ticket</title>
     <meta name="author" content="Cainarca Mattia">
     <meta name="description" content="Ticket System, edit ticket.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" th:src="@{/images/logo.png}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body>
-<header>
-    <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75">
-    <h1>Create New Ticket</h1>
-</header>
+<body class="d-flex flex-column min-vh-100 bg-dark">
 
-<nav>
-    <a th:href="@{/}">Home</a>
-</nav>
+<main>
+    <div class="container-fluid w-50">
+        <p class="fs-1 text-light fw-bold fst-italic">Fill the form to edit the ticket</p>
+        <form th:action="@{/ticket/{id}/edit(id=${ticket.id})}" method="post" enctype="multipart/form-data">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Title</span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="title" name="title" th:value="${ticket.title}"
+                           placeholder="Title" required>
+                    <label for="title">Ticket Title</label>
+                </div>
+            </div>
 
-<main class="main-form">
-    <p class="sub-title">Fill the form to edit the ticket</p>
-    <form th:action="@{/ticket/{id}/edit(id=${ticket.id})}" method="post">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" th:value="${ticket.title}" required><br><br>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="creationDate">Date</label>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="creationDate"
+                           th:value="${#dates.format(ticket.createdDate, 'dd-MM-yyyy HH:mm')}"
+                           placeholder="Creation Date"
+                           readonly>
+                    <label for="creationDate">Ticket Creation Date</label>
+                </div>
+            </div>
 
-        <label for="createdDate">Creation Date:</label><br>
-        <input type="text" id="createdDate" th:value="${#dates.format(ticket.createdDate, 'dd-MM-yyyy HH:mm')}"
-               readonly><br><br>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="type">Type</label>
+                <select class="form-select p-3" aria-label="Default select example" id="type" name="type" required>
+                    <option th:each="type : ${types}" th:value="${type}" th:text="${type}"
+                            th:selected="${type == ticket.type}"></option>
+                </select>
+            </div>
 
-        <label for="type">Type:</label><br>
-        <select id="type" name="type" required>
-            <option value="" disabled hidden>Select Type</option>
-            <option th:each="type : ${types}" th:value="${type}" th:text="${type}"
-                    th:selected="${type == ticket.type}"></option>
-        </select><br><br>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="author">User</label>
+                <select class="form-select p-3" aria-label="Default select example" id="author" name="userId" required>
+                    <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
+                            th:selected="${user.id == ticket.user.id}"></option>
+                </select>
+            </div>
 
-        <label for="user">Author:</label><br>
-        <select id="user" name="userId" required>
-            <option value="" disabled selected hidden>Select Author</option>
-            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
-                    th:selected="${user.id == ticket.user.id}"></option>
-        </select><br><br>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="status">Status</label>
+                <select class="form-select p-3" aria-label="Default select example" id="status" name="status" required>
+                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
+                            th:selected="${status == ticket.status}"></option>
+                </select>
+            </div>
 
-        <label for="status">Status:</label><br>
-        <select id="status" name="status" required>
-            <option value="" disabled hidden>Select Status</option>
-            <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
-                    th:selected="${status == ticket.status}"></option>
-        </select><br><br>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Description</span>
+                <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
+                      th:text="${ticket.description}" style="height: 100px" required></textarea>
+                    <label for="description">Ticket Description</label>
+                </div>
+            </div>
 
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description" th:text="${ticket.description}" required></textarea>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Attachments</span>
+                <div th:if="${ticket.attachments == null || ticket.attachments.isEmpty()}"
+                     class="form-control p-3 text-start">
+                    <label>There are no attachments for this ticket</label>
+                </div>
+                <div th:if="${ticket.attachments != null && !ticket.attachments.isEmpty()}"
+                     class="d-flex form-control flex-column">
+                    <div th:each="attachment : ${ticket.attachments}" class="d-flex w-100 p-2 align-items-center">
+                        <span class="flex-grow-1 text-decoration-none text-start"
+                              th:text="${attachment.name}"></span>
 
-        <input type="submit" value="Edit Ticket" class="primary-button">
-    </form>
+                        <span class="d-none d-lg-inline text-center me-4">
+                            (<span th:text="${attachment.contentType}"></span>)
+                            - <span th:text="${attachment.readeableSize}"></span>
+                        </span>
+
+                        <a th:href="@{'/ticket/'+${ticket.id}+'/attachment/'+${attachment.name}}" target="_blank"
+                           class="btn btn-primary btn-sm me-1">
+                            <i class="bi bi-eye"></i>
+                        </a>
+
+                        <a th:href="@{'/ticket/'+${ticket.id}+'/attachment/'+${attachment.name}}"
+                           class="btn btn-primary btn-sm" download>
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary fs-5" value="EditTicket">Edit Ticket</button>
+        </form>
+    </div>
 </main>
 
-<footer>
-    <small>Copyleft CC-by
-        <time datetime="2023">2023</time>
-        by Cainarca</small>
-</footer>
 </body>
 </html>

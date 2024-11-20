@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +38,10 @@ public class Ticket {
 
     @Column()
     private Date createdDate;
+
+    @ElementCollection
+    @CollectionTable(name = "ticket_attachments", joinColumns = @JoinColumn(name = "attachment_name"))
+    private List<Attachment> attachments = new ArrayList<>();
 
     public Ticket() {
         this.createdDate = new Date();

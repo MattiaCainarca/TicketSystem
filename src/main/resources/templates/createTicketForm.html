@@ -1,54 +1,58 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
     <title>Create New Ticket</title>
     <meta name="author" content="Cainarca Mattia">
     <meta name="description" content="Ticket System, form to create ticket.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" th:src="@{/images/logo.png}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
-    <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75">
-    <h1>Create New Ticket</h1>
-</header>
 
-<nav>
-    <a th:href="@{/}">Home</a>
-</nav>
+<main>
+    <div class="container-fluid w-50">
+    <p class="fs-1 text-light fw-bold fst-italic">Fill the form to add a new ticket</p>
+    <form th:action="@{/ticket/new}" method="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Title</span>
+            <div class="form-floating text-black">
+                <input type="text" class="form-control" id="title" name="title" th:value="${ticket.title}"
+                       placeholder="Title" required>
+                <label for="title">Ticket Title</label>
+            </div>
+        </div>
 
-<main class="main-form">
-    <p class="sub-title">Fill the form to add a new ticket</p>
-    <form th:action="@{/ticket/new}" method="post">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" th:value="${ticket.title}" required><br><br>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="type">Type</label>
+            <select class="form-select p-3" aria-label="Default select example" id="type" name="type" required>
+                <option value="" disabled selected>Select ticket type</option>
+                <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+            </select>
+        </div>
 
-        <label for="type">Type:</label><br>
-        <select id="type" name="type" required>
-            <option value="" disabled selected hidden>Select Type</option>
-            <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
-        </select><br><br>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="author">User</label>
+            <select class="form-select p-3" id="author" name="userId" required>
+                <option value="" disabled selected>Select an author</option>
+                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+            </select>
+        </div>
 
-        <label for="author">Author:</label><br>
-        <select id="author" name="userId" required>
-            <option value="" disabled selected hidden>Select Author</option>
-            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
-        </select><br><br>
+        <div class="input-group mb-3">
+            <span class="input-group-text">Description</span>
+            <div class="form-floating text-black">
+            <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
+                      th:text="${ticket.description}" required style="height: 100px"></textarea>
+                <label for="description">Ticket Description</label>
+            </div>
+        </div>
 
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description" th:text="${ticket.description}" required></textarea>
-
-        <input type="submit" value="Create Ticket" class="primary-button">
+        <div class="input-group mb-3">
+            <input type="file" class="form-control p-3" id="attachments" name="files" multiple>
+        </div>
+        <button type="submit" class="btn btn-primary fs-5" value="CreateTicket">Create Ticket</button>
     </form>
+    </div>
 </main>
-
-<footer>
-    <small>Copyleft CC-by
-        <time datetime="2023">2023</time>
-        by Cainarca</small>
-</footer>
 </body>
 </html>

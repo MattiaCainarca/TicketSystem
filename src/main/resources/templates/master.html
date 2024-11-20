@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, metas, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="description"
+          content="Home page of the Ticket System, listing tickets and providing navigation to other sections.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style2.css}">
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
+    <th:block th:replace="${metas}"/>
+
+    <title th:replace="${title}">Ticket Management</title>
+</head>
+<body class="d-flex flex-column min-vh-100 text-light bg-dark">
+
+<!-- Nav Fragment -->
+<nav class="navbar bg-dark navbar-expand-lg fs-4" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+            <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75"
+                 class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav gap-3">
+                <a class="nav-link" th:href="@{/}">Home</a>
+                <a class="nav-link" th:href="@{/ticket/new}">Create a Ticket</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid bg-dark text-center">
+    <th:block th:insert="${content}"></th:block>
+</main>
+
+<!-- Footer Fragment -->
+<div>
+    <footer class="bg-dark text-light py-3 mt-auto">
+        <div class="container w-75 border-top border-secondary text-center pt-2">
+            <small>Copyleft CC-by 2023 by Cainarca</small>
+        </div>
+    </footer>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.js}"></script>
+
+</body>
+</html>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, metas, content)">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(title, metas, content)">
 <head>
     <meta charset="UTF-8">
     <meta name="author" content="Cainarca Mattia">
@@ -12,7 +14,7 @@
     <link th:href="@{/webjars/bootstrap-icons/1.11.3/font/bootstrap-icons.css}" rel="stylesheet">
     <th:block th:replace="${metas}"/>
 
-    <title th:replace="${title}">Ticket Management</title>
+    <title th:replace="${title}">Ticket Handler</title>
 </head>
 <body class="d-flex flex-column min-vh-100 text-light bg-dark">
 
@@ -28,9 +30,23 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav gap-3">
+            <div class="navbar-nav gap-3 w-100">
                 <a class="nav-link" th:href="@{/}">Home</a>
-                <a class="nav-link" th:href="@{/ticket/new}">Create a Ticket</a>
+                <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/ticket/new}">Create a Ticket</a>
+
+                <div class="text-light ms-auto d-flex flex-row" sec:authorize="!isAuthenticated()">
+                    <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
+                       sec:authorize="!isAuthenticated()" th:href="@{/register}">Register</a>
+                    <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
+                       sec:authorize="!isAuthenticated()" th:href="@{/login}">Login</a>
+                </div>
+
+                <div class="text-light ms-auto d-flex flex-row" sec:authorize="isAuthenticated()">
+                    <span class=" me-3 d-flex align-items-center">Hi,&nbsp;<strong sec:authentication="name"></strong>
+                    </span>
+                    <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
+                       sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
+                </div>
             </div>
         </div>
     </div>

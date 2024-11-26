@@ -1,12 +1,17 @@
 package ch.supsi.webapp.tickets.controller;
 
 import ch.supsi.webapp.tickets.model.*;
+import ch.supsi.webapp.tickets.service.CustomerUserDetailService;
+import ch.supsi.webapp.tickets.service.RoleService;
 import ch.supsi.webapp.tickets.service.TicketService;
 import ch.supsi.webapp.tickets.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,23 +19,69 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class TicketController {
+    private final PasswordEncoder passwordEncoder;
     private final TicketService ticketService;
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public TicketController(TicketService ticketService, UserService userService) {
+    public TicketController(PasswordEncoder passwordEncoder, TicketService ticketService, UserService userService, CustomerUserDetailService customerUserDetailService, RoleService roleService) {
+        this.passwordEncoder = passwordEncoder;
         this.ticketService = ticketService;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("tickets", ticketService.findAll());
         return "index";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String registerUser(String username, String password, String firstName, String lastName, Model model) {
+        if (userService.findByUsername(username).isPresent()) {
+            model.addAttribute("error", "Username is already taken!");
+            return "register";
+        }
+
+        Role userRole = roleService.findByName("ROLE_USER");
+        if (userRole == null)
+            roleService.save(new Role("ROLE_USER"));
+
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setFirstName(firstName);
+        newUser.setLastName(lastName);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+        newUser.setRoles(roles);
+
+        userService.save(newUser);
+
+        return "redirect:/login";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        return "redirect:/";
     }
 
     @GetMapping("/ticket/{id}")
@@ -49,12 +100,16 @@ public class TicketController {
 
     @PostMapping("/ticket/new")
     public String createTicket(@ModelAttribute Ticket ticket,
-                               @RequestParam Long userId,
                                @RequestParam("files") MultipartFile[] attachments) throws IOException {
-        User user = userService.findById(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userService.findByUsername(username).orElse(null);
         if (user == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Authenticated user not found!");
         ticket.setUser(user);
+
+        ticket = ticketService.save(ticket);
 
         for (MultipartFile file : attachments)
             if (!file.isEmpty()) {
@@ -63,11 +118,12 @@ public class TicketController {
                         .name(file.getOriginalFilename())
                         .contentType(file.getContentType())
                         .size(file.getSize())
+                        .ticket(ticket)
                         .build();
                 ticket.getAttachments().add(attachment);
             }
 
-        ticketService.create(ticket);
+        ticketService.update(ticket.getId(), ticket);
         return "redirect:/";
     }
 
@@ -85,9 +141,9 @@ public class TicketController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(attachment.getContentType()))
+                .header("Content-Disposition", "inline; filename=\"" + attachment.getName() + "\"")
                 .body(attachment.getBytes());
     }
-
 
     @GetMapping("/ticket/{id}/edit")
     public String editTicketForm(@PathVariable Long id, Model model) {
@@ -104,16 +160,16 @@ public class TicketController {
     @PostMapping("/ticket/{id}/edit")
     public String editTicket(@PathVariable Long id, @ModelAttribute Ticket ticket, @RequestParam Long userId) {
         User user = userService.findById(userId);
-        if (user == null) {
+        if (user == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
-        }
         ticket.setUser(user);
         ticketService.update(id, ticket);
         return "redirect:/";
     }
 
     @GetMapping("/ticket/{id}/delete")
-    public String deleteTicket(@PathVariable Long id) {
+    public String deleteTicket(@PathVariable Long id, Authentication authentication) {
+        System.out.println("Authenticated user: " + authentication.getName());
         ticketService.delete(id);
         return "redirect:/";
     }

@@ -31,14 +31,6 @@
         </div>
 
         <div class="input-group mb-3">
-            <label class="input-group-text" for="author">User</label>
-            <select class="form-select p-3" id="author" name="userId" required>
-                <option value="" disabled selected>Select an author</option>
-                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
-            </select>
-        </div>
-
-        <div class="input-group mb-3">
             <span class="input-group-text">Description</span>
             <div class="form-floating text-black">
             <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"

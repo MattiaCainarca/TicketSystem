@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
-    <title>Tickets Handler</title>
     <meta name="author" content="Cainarca Mattia">
     <meta name="description" content="Ticket System, list ticket and provide information about it.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,7 +55,7 @@
 
                             <span class="d-none d-lg-inline text-center me-4">
                             (<span th:text="${attachment.contentType}"></span>)
-                            - <span th:text="${attachment.readeableSize}"></span>
+                            - <span th:text="${attachment.getReadableSize()}"></span>
                         </span>
 
                             <a th:href="@{'/ticket/'+${ticket.id}+'/attachment/'+${attachment.name}}" target="_blank"
@@ -73,12 +74,14 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-evenly my-3">
-            <a type="button" class="btn btn-primary fs-5" th:href="@{/ticket/{id}/edit(id=${ticket.id})}">Edit
+            <a type="button" class="btn btn-primary fs-5" sec:authorize="hasRole('ADMIN')"
+               th:href="@{/ticket/{id}/edit(id=${ticket.id})}">Edit
                 Ticket</a>
-            <a type="button" class="btn btn-primary fs-5" th:href="@{/ticket/{id}/delete(id=${ticket.id})}">Delete
+            <a type="button" class="btn btn-primary fs-5" sec:authorize="hasRole('ADMIN')"
+               th:href="@{/ticket/{id}/delete(id=${ticket.id})}">Delete
                 Ticket</a>
         </div>
-        <button type="button" class="btn btn-primary fs-5" th:href="@{/}">Back to Ticket List</button>
+        <a class="fs-5 btn btn-primary " th:href="@{/}">Back to Ticket List</a>
     </div>
 </main>
 

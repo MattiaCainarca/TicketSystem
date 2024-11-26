@@ -15,6 +15,9 @@
         <section class="col-lg-9">
             <div class="container text-center mt-3">
                 <p class="fs-2 fw-semibold">Available Tickets</p>
+                <p class="fs-4 fst-italic" th:if="${#lists.isEmpty(tickets)}">
+                    There isn't any ticket in the list.
+                </p>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                     <div class="col" th:each="ticket : ${tickets}">
                         <article class="card text-bg-dark">
@@ -41,9 +44,10 @@
         </section>
         <aside class="col-lg d-lg-flex flex-column p-3">
             <p class="fs-2 fw-semibold">Sidebar Content</p>
-            <p>This is the sidebar content.</p>
+            <p class="fs-4 fst-italic">This is the sidebar content.</p>
         </aside>
     </div>
 </main>
+
 </body>
 </html>

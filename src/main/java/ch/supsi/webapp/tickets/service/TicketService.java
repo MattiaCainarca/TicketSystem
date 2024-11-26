@@ -23,7 +23,7 @@ public class TicketService {
         return ticketRepository.findById(id).orElse(null);
     }
 
-    public Ticket create(Ticket ticket) {
+    public Ticket save(Ticket ticket) {
         return ticketRepository.save(ticket);
     }
 

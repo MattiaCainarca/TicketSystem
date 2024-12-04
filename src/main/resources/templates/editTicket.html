@@ -80,7 +80,7 @@
 
                         <span class="d-none d-lg-inline text-center me-4">
                             (<span th:text="${attachment.contentType}"></span>)
-                            - <span th:text="${attachment.readeableSize}"></span>
+                            - <span th:text="${attachment.getReadableSize()}"></span>
                         </span>
 
                         <a th:href="@{'/ticket/'+${ticket.id}+'/attachment/'+${attachment.name}}" target="_blank"

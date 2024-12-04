@@ -32,7 +32,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/ticket/new").authenticated()
                         .requestMatchers("/ticket/*/edit").hasRole("ADMIN")
                         .requestMatchers("/ticket/*/delete").hasRole("ADMIN")
-                         .requestMatchers("/css/**", "/images/**", "/webjars/**", "/fonts/**").permitAll()
+                         .requestMatchers("/css/**", "/images/**", "/webjars/**", "/fonts/**", "/script/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

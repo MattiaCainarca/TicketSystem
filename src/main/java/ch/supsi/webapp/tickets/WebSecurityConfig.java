@@ -29,6 +29,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/home-table").permitAll()
                         .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/tickets/search").permitAll()
                         .requestMatchers("/ticket/new").authenticated()
                         .requestMatchers("/ticket/*/edit").hasRole("ADMIN")
                         .requestMatchers("/ticket/*/delete").hasRole("ADMIN")

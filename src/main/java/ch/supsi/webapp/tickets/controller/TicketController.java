@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -172,5 +173,11 @@ public class TicketController {
         System.out.println("Authenticated user: " + authentication.getName());
         ticketService.delete(id);
         return "redirect:/";
+    }
+
+    @GetMapping("/tickets/search")
+    @ResponseBody
+    public List<Ticket> searchTickets(@RequestParam("q") String query) {
+        return ResponseEntity.ok(ticketService.searchTickets(query)).getBody();
     }
 }

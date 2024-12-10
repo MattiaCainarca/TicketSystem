@@ -14,21 +14,38 @@
     <div class="row">
         <section class="col-lg-9">
             <div class="container text-center mt-3">
-                <p class="fs-2 fw-semibold">Available Tickets</p>
+                <div class="d-flex align-items-center flex-row mb-3">
+                    <p class="fs-2 fw-semibold">Available Tickets</p>
+                    <div class="d-flex flex-row align-items-center justify-content-center ms-auto">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Search into tickets" id="search"
+                                   aria-label="Search into tickets" aria-describedby="button-addon2">
+                            <button class="btn btn-primary" type="button" id="searchBtn">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <p class="fs-4 fst-italic" th:if="${#lists.isEmpty(tickets)}">
                     There isn't any ticket in the list.
                 </p>
+                <div id="loading" class="text-center my-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Searching tickets...</p>
+                </div>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                     <div class="col" th:each="ticket : ${tickets}">
                         <article class="card text-bg-dark">
-                            <div class="card-header text-uppercase"
+                            <div class="card-header"
                                  th:classappend="${ticket.status.name() == 'OPEN' ? 'bg-danger' :
                                  (ticket.status.name() == 'IN_PROGRESS' ? 'bg-warning' :
                                   (ticket.status.name() == 'DONE' ? 'bg-success' :
                                    (ticket.status.name() == 'CLOSED' ? 'bg-primary' : 'bg-secondary')))}">
-                                <strong><span th:text="${ticket.title}"></span></strong>
+                                <strong><span class="fs-4" th:text="${ticket.title}"></span></strong>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body border rounded-bottom-1 border-top-0 border-1 border-secondary">
                                 <p><strong>Creation Date: </strong><span
                                         th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span></p>
                                 <p><strong>Status: </strong><span th:text="${ticket.status}"></span></p>
@@ -47,7 +64,7 @@
             <p class="fs-4 fst-italic">This is the sidebar content.</p>
         </aside>
     </div>
+    <script th:src="@{/script/search.js}"></script>
 </main>
-
 </body>
 </html>

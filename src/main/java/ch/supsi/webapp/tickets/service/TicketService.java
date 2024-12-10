@@ -44,4 +44,8 @@ public class TicketService {
         Optional<Ticket> ticket = ticketRepository.findById(id);
         ticket.ifPresent(ticketRepository::delete);
     }
+
+    public List<Ticket> searchTickets(String query) {
+        return ticketRepository.findInTickets(query);
+    }
 }

@@ -6,33 +6,62 @@
 </head>
 <body>
 
-<main>
+<main role="main" aria-labelledby="main-heading">
+    <h1 id="main-heading" class="visually-hidden">User Registration</h1>
     <div class="container-fluid w-50">
-        <form th:action="@{/register}" method="post" data-bs-theme="dark">
+        <form th:action="@{/register}" method="post" data-bs-theme="dark" aria-describedby="form-instructions">
+            <p id="form-instructions" class="visually-hidden">
+                Please complete all required fields to register a new account.
+            </p>
+
+            <!-- First Name -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name">
+                <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name"
+                       aria-required="true" aria-describedby="firstName-help">
                 <label for="firstName">First Name</label>
+                <span id="firstName-help" class="visually-hidden">Enter your first name.</span>
             </div>
+
+            <!-- Last Name -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name">
+                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name"
+                       aria-required="true" aria-describedby="lastName-help">
                 <label for="lastName">Last Name</label>
+                <span id="lastName-help" class="visually-hidden">Enter your last name.</span>
             </div>
+
+            <!-- Username -->
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username"
+                       aria-required="true" aria-describedby="username-help">
                 <label for="username">Username</label>
+                <span id="username-help" class="visually-hidden">Choose a unique username for your account.</span>
             </div>
+
+            <!-- Password -->
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="password" name="password"
-                       placeholder="Password">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                       aria-required="true" aria-describedby="password-help">
                 <label for="password">Password</label>
+                <span id="password-help" class="visually-hidden">Enter a secure password. Ensure it meets the strength requirements.</span>
             </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="passwordConfirm" name="Password Confirm"
-                       placeholder="Password Confirm">
+
+            <!-- Password Confirmation -->
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" placeholder="Password Confirm"
+                       aria-required="true" aria-describedby="passwordConfirm-help">
                 <label for="passwordConfirm">Password Confirm</label>
+                <span id="passwordConfirm-help" class="visually-hidden">Re-enter your password for confirmation.</span>
             </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary fs-5 mt-3" aria-label="Submit registration form">
+                Register
+            </button>
         </form>
-        <script th:src="@{/script/registrationConstraint.js}"></script>
+
+        <!-- Registration Constraints Script -->
+        <script th:src="@{/script/registrationConstraint.js}" async></script>
     </div>
 </main>
 

@@ -19,11 +19,10 @@
 <body class="d-flex flex-column min-vh-100 text-light bg-dark">
 
 <!-- Nav Fragment -->
-<nav class="navbar bg-dark navbar-expand-lg fs-4" data-bs-theme="dark">
+<nav class="navbar bg-dark navbar-expand-lg fs-4" data-bs-theme="dark" role="navigation" aria-label="Main navigation">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/}">
-            <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75"
-                 class="d-inline-block align-text-top">
+            <img th:src="@{/images/logo.png}" alt="Ticket System Logo" width="75" class="d-inline-block align-text-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,34 +35,41 @@
 
                 <div class="text-light ms-auto d-flex flex-row" sec:authorize="!isAuthenticated()">
                     <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
-                       sec:authorize="!isAuthenticated()" th:href="@{/register}">Register</a>
+                       sec:authorize="!isAuthenticated()" th:href="@{/register}" aria-label="Register for an account">
+                        Register
+                    </a>
                     <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
-                       sec:authorize="!isAuthenticated()" th:href="@{/login}">Login</a>
+                       sec:authorize="!isAuthenticated()" th:href="@{/login}" aria-label="Login to your account">
+                        Login
+                    </a>
                 </div>
 
                 <div class="text-light ms-auto d-flex flex-row" sec:authorize="isAuthenticated()">
-                    <span class=" me-3 d-flex align-items-center">Hi,&nbsp;<strong sec:authentication="name"></strong>
+                    <span class="me-3 d-flex align-items-center">Hi,&nbsp;
+                        <strong sec:authentication="name"></strong>
                     </span>
                     <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
-                       sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
+                       sec:authorize="isAuthenticated()" th:href="@{/logout}" aria-label="Logout of your account">
+                        Logout
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </nav>
 
-<main class="container-fluid bg-dark text-center">
+<!-- Main Fragment -->
+<main class="container-fluid bg-dark text-center" role="main" aria-labelledby="main-content">
+    <h1 id="main-content" class="visually-hidden">Main Content</h1>
     <th:block th:insert="${content}"></th:block>
 </main>
 
 <!-- Footer Fragment -->
-<div>
-    <footer class="bg-dark text-light py-3 mt-auto">
-        <div class="container w-75 border-top border-secondary text-center pt-2">
-            <small>Copyleft CC-by 2023 by Cainarca</small>
-        </div>
-    </footer>
-</div>
+<footer class="bg-dark text-light py-3 mt-auto" role="contentinfo">
+    <div class="container w-75 border-top border-secondary text-center pt-2">
+        <small>Copyleft CC-by 2023 by Cainarca</small>
+    </div>
+</footer>
 
 <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.js}"></script>
 

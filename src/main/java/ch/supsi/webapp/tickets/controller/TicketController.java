@@ -177,7 +177,13 @@ public class TicketController {
 
     @GetMapping("/tickets/search")
     @ResponseBody
-    public List<Ticket> searchTickets(@RequestParam("q") String query) {
-        return ResponseEntity.ok(ticketService.searchTickets(query)).getBody();
+    public ResponseEntity<?> searchTickets(@RequestParam(value = "q", required = false) String query) {
+        if (query == null || query.trim().isEmpty())
+            return ResponseEntity.ok(ticketService.findAll());
+
+        if (query.trim().length() < 3)
+            return ResponseEntity.badRequest().body("Type at least 3 characters to search.");
+
+        return ResponseEntity.ok(ticketService.searchTickets(query.trim()));
     }
 }

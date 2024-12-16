@@ -9,94 +9,97 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-dark">
 
-<main>
+<main role="main" aria-labelledby="main-heading">
+    <h1 id="main-heading" class="visually-hidden">Edit Ticket Form</h1>
     <div class="container-fluid w-50">
-        <p class="fs-1 text-light fw-bold fst-italic">Fill the form to edit the ticket</p>
-        <form th:action="@{/ticket/{id}/edit(id=${ticket.id})}" method="post" enctype="multipart/form-data">
+        <p class="fs-1 text-light fw-bold fst-italic" aria-label="Fill the form to edit the ticket">
+            Fill the form to edit the ticket
+        </p>
+        <form th:action="@{/ticket/{id}/edit(id=${ticket.id})}" method="post" enctype="multipart/form-data" aria-describedby="form-instructions">
+            <p id="form-instructions" class="visually-hidden">
+                Complete the required fields and submit the form to edit the ticket.
+            </p>
+            <!-- Title Input -->
             <div class="input-group mb-3">
-                <span class="input-group-text">Title</span>
+                <label for="title" class="input-group-text">Title</label>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="title" name="title" th:value="${ticket.title}"
-                           placeholder="Title" required>
+                           placeholder="Title" required aria-required="true" aria-describedby="title-help">
                     <label for="title">Ticket Title</label>
                 </div>
             </div>
-
+            <!-- Date Input -->
             <div class="input-group mb-3">
-                <label class="input-group-text" for="creationDate">Date</label>
+                <label for="creationDate" class="input-group-text">Date</label>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="creationDate"
                            th:value="${#dates.format(ticket.createdDate, 'dd-MM-yyyy HH:mm')}"
                            placeholder="Creation Date"
-                           readonly>
+                           readonly aria-readonly="true">
                     <label for="creationDate">Ticket Creation Date</label>
                 </div>
             </div>
-
+            <!-- Type Selector -->
             <div class="input-group mb-3">
-                <label class="input-group-text" for="type">Type</label>
-                <select class="form-select p-3" aria-label="Default select example" id="type" name="type" required>
+                <label for="type" class="input-group-text">Type</label>
+                <select class="form-select p-3" id="type" name="type" required aria-required="true">
                     <option th:each="type : ${types}" th:value="${type}" th:text="${type}"
                             th:selected="${type == ticket.type}"></option>
                 </select>
             </div>
-
+            <!-- User Selector -->
             <div class="input-group mb-3">
-                <label class="input-group-text" for="author">User</label>
-                <select class="form-select p-3" aria-label="Default select example" id="author" name="userId" required>
+                <label for="author" class="input-group-text">User</label>
+                <select class="form-select p-3" id="author" name="userId" required aria-required="true">
                     <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
                             th:selected="${user.id == ticket.user.id}"></option>
                 </select>
             </div>
-
+            <!-- Status Selector -->
             <div class="input-group mb-3">
-                <label class="input-group-text" for="status">Status</label>
-                <select class="form-select p-3" aria-label="Default select example" id="status" name="status" required>
+                <label for="status" class="input-group-text">Status</label>
+                <select class="form-select p-3" id="status" name="status" required aria-required="true">
                     <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
                             th:selected="${status == ticket.status}"></option>
                 </select>
             </div>
-
+            <!-- Description Input -->
             <div class="input-group mb-3">
-                <span class="input-group-text">Description</span>
+                <label for="description" class="input-group-text">Description</label>
                 <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
-                      th:text="${ticket.description}" style="height: 100px" required></textarea>
+                    <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
+                              th:text="${ticket.description}" style="height: 100px" required aria-required="true"></textarea>
                     <label for="description">Ticket Description</label>
                 </div>
             </div>
-
+            <!-- Attachments -->
             <div class="input-group mb-3">
                 <span class="input-group-text">Attachments</span>
                 <div th:if="${ticket.attachments == null || ticket.attachments.isEmpty()}"
                      class="form-control p-3 text-start">
-                    <label>There are no attachments for this ticket</label>
+                    <p aria-live="polite">There are no attachments for this ticket.</p>
                 </div>
                 <div th:if="${ticket.attachments != null && !ticket.attachments.isEmpty()}"
-                     class="d-flex form-control flex-column">
-                    <div th:each="attachment : ${ticket.attachments}" class="d-flex w-100 p-2 align-items-center">
-                        <span class="flex-grow-1 text-decoration-none text-start"
-                              th:text="${attachment.name}"></span>
-
+                     class="d-flex form-control flex-column" role="list">
+                    <div th:each="attachment : ${ticket.attachments}" class="d-flex w-100 p-2 align-items-center" role="listitem">
+                        <span class="flex-grow-1 text-decoration-none text-start" th:text="${attachment.name}"></span>
                         <span class="d-none d-lg-inline text-center me-4">
                             (<span th:text="${attachment.contentType}"></span>)
                             - <span th:text="${attachment.getReadableSize()}"></span>
                         </span>
-
                         <a th:href="@{'/ticket/'+${ticket.id}+'/attachment/'+${attachment.name}}" target="_blank"
-                           class="btn btn-primary btn-sm me-1">
-                            <i class="bi bi-eye"></i>
+                           class="btn btn-primary btn-sm me-1" aria-label="View attachment [${attachment.name}]">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
-
                         <a th:href="@{'/ticket/'+${ticket.id}+'/attachment/'+${attachment.name}}"
-                           class="btn btn-primary btn-sm" download>
-                            <i class="bi bi-download"></i>
+                           class="btn btn-primary btn-sm" download aria-label="Download attachment [${attachment.name}]">
+                            <i class="bi bi-download" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
             </div>
-
-            <button type="submit" class="btn btn-primary fs-5" value="EditTicket">Edit Ticket</button>
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary fs-5" value="EditTicket" aria-label="Submit edited ticket">Edit Ticket</button>
         </form>
     </div>
 </main>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"  th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
     <title>Create New Ticket</title>
@@ -9,41 +9,58 @@
 </head>
 <body>
 
-<main>
+<main role="main" aria-labelledby="main-heading">
+    <h1 id="main-heading" class="visually-hidden">Create New Ticket Form</h1>
     <div class="container-fluid w-50">
-    <p class="fs-1 text-light fw-bold fst-italic">Fill the form to add a new ticket</p>
-    <form th:action="@{/ticket/new}" method="post" enctype="multipart/form-data">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Title</span>
-            <div class="form-floating text-black">
-                <input type="text" class="form-control" id="title" name="title" th:value="${ticket.title}"
-                       placeholder="Title" required>
-                <label for="title">Ticket Title</label>
+        <p class="fs-1 text-light fw-bold fst-italic" aria-label="Fill the form to add a new ticket">
+            Fill the form to add a new ticket
+        </p>
+        <form th:action="@{/ticket/new}" method="post" enctype="multipart/form-data" aria-describedby="form-instructions">
+            <p id="form-instructions" class="visually-hidden">
+                Complete the required fields and submit the form to create a new ticket.
+            </p>
+
+            <!-- Title Input -->
+            <div class="input-group mb-3">
+                <label for="title" class="input-group-text">Title</label>
+                <div class="form-floating text-black">
+                    <input type="text" class="form-control" id="title" name="title" th:value="${ticket.title}"
+                           placeholder="Title" required aria-required="true" aria-describedby="title-help">
+                    <label for="title">Ticket Title</label>
+                </div>
             </div>
-        </div>
 
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="type">Type</label>
-            <select class="form-select p-3" aria-label="Default select example" id="type" name="type" required>
-                <option value="" disabled selected>Select ticket type</option>
-                <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
-            </select>
-        </div>
-
-        <div class="input-group mb-3">
-            <span class="input-group-text">Description</span>
-            <div class="form-floating text-black">
-            <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
-                      th:text="${ticket.description}" required style="height: 100px"></textarea>
-                <label for="description">Ticket Description</label>
+            <!-- Type Selector -->
+            <div class="input-group mb-3">
+                <label for="type" class="input-group-text">Type</label>
+                <select class="form-select p-3" id="type" name="type" required aria-required="true">
+                    <option value="" disabled selected>Select ticket type</option>
+                    <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+                </select>
             </div>
-        </div>
 
-        <div class="input-group mb-3">
-            <input type="file" class="form-control p-3" id="attachments" name="files" multiple>
-        </div>
-        <button type="submit" class="btn btn-primary fs-5" value="CreateTicket">Create Ticket</button>
-    </form>
+            <!-- Description Input -->
+            <div class="input-group mb-3">
+                <label for="description" class="input-group-text">Description</label>
+                <div class="form-floating text-black">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
+                              th:text="${ticket.description}" required aria-required="true" style="height: 100px"></textarea>
+                    <label for="description">Ticket Description</label>
+                </div>
+            </div>
+
+            <!-- File Input -->
+            <div class="input-group mb-3">
+                <label for="attachments" class="input-group-text">Attachments</label>
+                <input type="file" class="form-control p-3" id="attachments" name="files" multiple
+                       aria-label="Upload attachments for the ticket">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary fs-5" value="CreateTicket" aria-label="Submit new ticket">
+                Create Ticket
+            </button>
+        </form>
     </div>
 </main>
 </body>

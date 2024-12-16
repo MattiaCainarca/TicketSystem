@@ -1,3 +1,5 @@
+const searchInput = document.getElementById("search");
+
 function getStatusClass(status) {
     switch (status) {
         case 'OPEN':
@@ -19,51 +21,45 @@ function toggleLoading(show) {
 }
 
 function searchTickets(query) {
-    const container = document.querySelector(".row-cols-1");
+    const container = document.querySelector("#ticket-container");
 
-    toggleLoading(true);
-
-    if (query === "") {
-        fetch(`/tickets`)
+    if (query.length === 0) {
+        toggleLoading(true);
+        fetch(`/tickets/search?q=${encodeURIComponent(query)}`)
             .then(response => {
-                if (!response.ok) throw new Error("Error fetching all tickets");
+                if (!response.ok) throw new Error("Error fetching tickets");
                 return response.json();
             })
             .then(tickets => {
                 container.innerHTML = "";
                 if (tickets.length === 0) {
-                    container.innerHTML = '<p class="fs-4 fst-italic">No tickets available.</p>';
+                    container.innerHTML = '<p class="fs-4 fst-italic">No tickets found.</p>';
                     return;
                 }
                 tickets.forEach(ticket => {
                     const card = `
-                        <div class="col">
-                            <article class="card text-bg-dark">
-                                <div class="card-header ${getStatusClass(ticket.status)}">
-                                    <strong>${ticket.title}</strong>
-                                </div>
-                                <div class="card-body">
-                                    <p><strong>Creation Date: </strong>${new Date(ticket.createdDate).toLocaleDateString()}</p>
-                                    <p><strong>Status: </strong>${ticket.status}</p>
-                                    <p class="text-truncate"><strong>Description: </strong>${ticket.description}</p>
-                                    <a href="/ticket/${ticket.id}" class="btn btn-primary btn-sm">Open Detail</a>
-                                </div>
-                            </article>
-                        </div>
-                    `;
+                    <div class="col">
+                        <article class="card text-bg-dark">
+                            <div class="card-header ${getStatusClass(ticket.status)}">
+                                <span class="fs-4"><strong>${ticket.title}</strong></span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Creation Date: </strong>${new Date(ticket.createdDate).toLocaleDateString()}</p>
+                                <p><strong>Status: </strong>${ticket.status}</p>
+                                <p class="text-truncate"><strong>Description: </strong>${ticket.description}</p>
+                                <a href="/ticket/${ticket.id}" class="btn btn-primary btn-sm">Open Detail</a>
+                            </div>
+                        </article>
+                    </div>`;
                     container.innerHTML += card;
                 });
             })
             .catch(error => console.error("Error:", error))
             .finally(() => toggleLoading(false));
-        return;
-    }
-
-    if (query.length < 3) {
-        toggleLoading(false);
+    } else if (query.length < 3) {
         container.innerHTML = '<p class="fs-4 text-center fst-italic">Type at least 3 characters to search.</p>';
-    }else {
-
+    } else {
+        toggleLoading(true);
         fetch(`/tickets/search?q=${encodeURIComponent(query)}`)
             .then(response => {
                 if (!response.ok) throw new Error("Error fetching tickets");
@@ -82,7 +78,7 @@ function searchTickets(query) {
                     <div class="col">
                         <article class="card text-bg-dark">
                             <div class="card-header ${getStatusClass(ticket.status)}">
-                                <strong>${ticket.title}</strong>
+                                <span class="fs-4"><strong>${ticket.title}</strong></span>
                             </div>
                             <div class="card-body">
                                 <p><strong>Creation Date: </strong>${new Date(ticket.createdDate).toLocaleDateString()}</p>
@@ -91,8 +87,7 @@ function searchTickets(query) {
                                 <a href="/ticket/${ticket.id}" class="btn btn-primary btn-sm">Open Detail</a>
                             </div>
                         </article>
-                    </div>
-                `;
+                    </div>`;
                     container.innerHTML += card;
                 });
             })
@@ -101,7 +96,6 @@ function searchTickets(query) {
     }
 }
 
-const searchInput = document.getElementById("search");
 searchInput.addEventListener("input", function () {
     const query = searchInput.value.trim();
     searchTickets(query);

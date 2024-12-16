@@ -8,17 +8,18 @@
 
 <main>
     <div class="container-fluid w-50">
-        <form th:action="@{/login}" method="post" data-bs-theme="dark">
+        <form th:action="@{/login}" method="post" data-bs-theme="dark" aria-labelledby="login-form">
+            <h2 id="login-form">Login to your account</h2>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username">
+                <input type="text" class="form-control" id="floatingInput" name="username" placeholder="Username" aria-required="true">
                 <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating">
                 <input type="password" class="form-control" id="floatingPassword" name="password"
-                       placeholder="Password">
+                       placeholder="Password" aria-required="true">
                 <label for="floatingPassword">Password</label>
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Login</button>
+            <button type="submit" class="btn btn-primary fs-5 mt-3" aria-label="Submit login form">Login</button>
         </form>
     </div>
 </main>

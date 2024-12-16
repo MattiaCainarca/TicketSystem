@@ -9,62 +9,73 @@
 </head>
 <body>
 
-<main>
-    <p class="fs-1 fw-bold">Ticket Handler</p>
+<main role="main" aria-labelledby="main-heading">
+    <h1 id="main-heading" class="visually-hidden">Ticket System Main Content</h1>
+    <p class="fs-1 fw-bold" aria-label="Ticket Handler">Ticket Handler</p>
     <div class="row">
-        <section class="col-lg-9">
+        <section class="col-lg-9" role="region" aria-labelledby="tickets-heading">
+            <h2 id="tickets-heading" class="visually-hidden">Available Tickets Section</h2>
             <div class="container text-center mt-3">
                 <div class="d-flex align-items-center flex-row mb-3">
-                    <p class="fs-2 fw-semibold">Available Tickets</p>
+                    <p class="fs-2 fw-semibold" aria-label="Available Tickets">Available Tickets</p>
                     <div class="d-flex flex-row align-items-center justify-content-center ms-auto">
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" role="search">
+                            <label for="search" class="visually-hidden">Search tickets</label>
                             <input type="text" class="form-control" placeholder="Search into tickets" id="search"
-                                   aria-label="Search into tickets" aria-describedby="button-addon2">
-                            <button class="btn btn-primary" type="button" id="searchBtn">
-                                <i class="bi bi-search"></i>
+                                   aria-label="Search into tickets" aria-describedby="searchBtn">
+                            <button class="btn btn-primary" type="button" id="searchBtn" aria-label="Start search">
+                                <i class="bi bi-search" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                <p class="fs-4 fst-italic" th:if="${#lists.isEmpty(tickets)}">
+                <p class="fs-4 fst-italic" th:if="${#lists.isEmpty(tickets)}" aria-live="polite">
                     There isn't any ticket in the list.
                 </p>
-                <div id="loading" class="text-center my-3" style="display: none;">
+                <div id="loading" class="text-center my-3" style="display: none;" aria-live="polite">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <p>Searching tickets...</p>
                 </div>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    <div class="col" th:each="ticket : ${tickets}">
-                        <article class="card text-bg-dark">
+                <div id="ticket-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" role="list">
+                    <div class="col" th:each="ticket : ${tickets}" role="listitem">
+                        <article class="card text-bg-dark" aria-labelledby="ticket-title-${ticket.id}">
                             <div class="card-header"
                                  th:classappend="${ticket.status.name() == 'OPEN' ? 'bg-danger' :
                                  (ticket.status.name() == 'IN_PROGRESS' ? 'bg-warning' :
                                   (ticket.status.name() == 'DONE' ? 'bg-success' :
                                    (ticket.status.name() == 'CLOSED' ? 'bg-primary' : 'bg-secondary')))}">
-                                <strong><span class="fs-4" th:text="${ticket.title}"></span></strong>
+                                <strong id="ticket-title-${ticket.id}">
+                                    <span class="fs-4" th:text="${ticket.title}"></span>
+                                </strong>
                             </div>
                             <div class="card-body border rounded-bottom-1 border-top-0 border-1 border-secondary">
-                                <p><strong>Creation Date: </strong><span
-                                        th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span></p>
-                                <p><strong>Status: </strong><span th:text="${ticket.status}"></span></p>
-                                <p class="text-truncate"><strong>Description: </strong><span
-                                        th:text="${ticket.description}"></span></p>
-                                <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm">Open
-                                    Detail</a>
+                                <p><strong>Creation Date: </strong>
+                                    <span th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span>
+                                </p>
+                                <p><strong>Status: </strong>
+                                    <span th:text="${ticket.status}"></span>
+                                </p>
+                                <p class="text-truncate"><strong>Description: </strong>
+                                    <span th:text="${ticket.description}"></span>
+                                </p>
+                                <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm"
+                                   aria-label="View details of ticket titled [${ticket.title}]">Open Detail</a>
                             </div>
                         </article>
                     </div>
                 </div>
             </div>
         </section>
-        <aside class="col-lg d-lg-flex flex-column p-3">
-            <p class="fs-2 fw-semibold">Sidebar Content</p>
-            <p class="fs-4 fst-italic">This is the sidebar content.</p>
+        <aside class="col-lg d-lg-flex flex-column p-3" role="complementary" aria-labelledby="sidebar-heading">
+            <h2 id="sidebar-heading" class="visually-hidden">Sidebar Content</h2>
+            <p class="fs-2 fw-semibold" aria-label="Sidebar Title">Sidebar Content</p>
+            <p class="fs-4 fst-italic" aria-label="Sidebar Description">This is the sidebar content.</p>
         </aside>
     </div>
     <script th:src="@{/script/search.js}"></script>
 </main>
+
 </body>
 </html>

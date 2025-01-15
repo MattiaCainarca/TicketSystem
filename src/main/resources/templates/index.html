@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
     <meta name="author" content="Cainarca Mattia">
@@ -50,7 +52,7 @@
                                     <span class="fs-4" th:text="${ticket.title}"></span>
                                 </strong>
                             </div>
-                            <div class="card-body border rounded-bottom-1 border-top-0 border-1 border-secondary">
+                            <div class="card-body border border-2 rounded-bottom-1 border-top-0 border-1 border-secondary">
                                 <p><strong>Creation Date: </strong>
                                     <span th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span>
                                 </p>
@@ -62,6 +64,9 @@
                                 </p>
                                 <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm"
                                    aria-label="View details of ticket titled [${ticket.title}]">Open Detail</a>
+                                <a th:href="@{/ticket/{id}/spentTime(id=${ticket.id})}" class="btn btn-primary btn-sm"
+                                   th:if="${#authorization.getAuthentication().getName() == ticket.userAssignee.username}"
+                                   aria-label="Set time spent of ticket titled [${ticket.title}]">Set Time Spent</a>
                             </div>
                         </article>
                     </div>

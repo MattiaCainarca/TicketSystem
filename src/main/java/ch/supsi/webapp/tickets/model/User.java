@@ -1,5 +1,6 @@
 package ch.supsi.webapp.tickets.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,15 @@ public class User {
     @Column()
     private String lastName;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_tickets",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tickets_id")
+    )
+    @JsonIgnore
+    private Set<Ticket> watchlistTickets = new HashSet<>();
+
     public User() {
     }
 
@@ -51,5 +61,9 @@ public class User {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    public void addTicketToWatchlist(Ticket ticket) {
+        watchlistTickets.add(ticket);
     }
 }

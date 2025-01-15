@@ -19,6 +19,14 @@
             <p id="form-instructions" class="visually-hidden">
                 Complete the required fields and submit the form to edit the ticket.
             </p>
+            <!-- Status Selector -->
+            <div class="input-group mb-3">
+                <label for="status" class="input-group-text">Status</label>
+                <select class="form-select p-3" id="status" name="status" required aria-required="true">
+                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
+                            th:selected="${status == ticket.status}"></option>
+                </select>
+            </div>
             <!-- Title Input -->
             <div class="input-group mb-3">
                 <label for="title" class="input-group-text">Title</label>
@@ -28,15 +36,31 @@
                     <label for="title">Ticket Title</label>
                 </div>
             </div>
-            <!-- Date Input -->
+            <!-- Description Input -->
             <div class="input-group mb-3">
-                <label for="creationDate" class="input-group-text">Date</label>
+                <label for="description" class="input-group-text">Description</label>
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="creationDate"
-                           th:value="${#dates.format(ticket.createdDate, 'dd-MM-yyyy HH:mm')}"
-                           placeholder="Creation Date"
-                           readonly aria-readonly="true">
-                    <label for="creationDate">Ticket Creation Date</label>
+                    <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
+                              th:text="${ticket.description}" style="height: 100px" required aria-required="true"></textarea>
+                    <label for="description">Ticket Description</label>
+                </div>
+            </div>
+            <!-- Due Date -->
+            <div class="input-group mb-3">
+                <label for="dueDate" class="input-group-text">Due Date</label>
+                <div class="form-floating">
+                    <input class="form-control" type="date" id="dueDate" name="dueDate"
+                           th:value="${#dates.format(ticket.dueDate, 'yyyy-MM-dd')}" required aria-required="true">
+                    <label for="dueDate">Ticket Due Date</label>
+                </div>
+            </div>
+            <!-- Time estimate -->
+            <div class="input-group mb-3">
+                <label for="timeEstimate" class="input-group-text">Time Estimate</label>
+                <div class="form-floating text-black">
+                    <input class="form-control" placeholder="Time Estimate" type="number" step="0.1" min="0" id="timeEstimate"
+                           name="timeEstimate" th:value="${ticket.timeEstimate}" required aria-required="true">
+                    <label for="timeEstimate">Ticket Time Estimate</label>
                 </div>
             </div>
             <!-- Type Selector -->
@@ -47,30 +71,13 @@
                             th:selected="${type == ticket.type}"></option>
                 </select>
             </div>
-            <!-- User Selector -->
+            <!-- User Assignee Selector -->
             <div class="input-group mb-3">
-                <label for="author" class="input-group-text">User</label>
-                <select class="form-select p-3" id="author" name="userId" required aria-required="true">
+                <label for="userAssignee" class="input-group-text">User Assignee</label>
+                <select class="form-select p-3" id="userAssignee" name="userAssignee" required aria-required="true">
                     <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"
                             th:selected="${user.id == ticket.user.id}"></option>
                 </select>
-            </div>
-            <!-- Status Selector -->
-            <div class="input-group mb-3">
-                <label for="status" class="input-group-text">Status</label>
-                <select class="form-select p-3" id="status" name="status" required aria-required="true">
-                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"
-                            th:selected="${status == ticket.status}"></option>
-                </select>
-            </div>
-            <!-- Description Input -->
-            <div class="input-group mb-3">
-                <label for="description" class="input-group-text">Description</label>
-                <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
-                              th:text="${ticket.description}" style="height: 100px" required aria-required="true"></textarea>
-                    <label for="description">Ticket Description</label>
-                </div>
             </div>
             <!-- Attachments -->
             <div class="input-group mb-3">

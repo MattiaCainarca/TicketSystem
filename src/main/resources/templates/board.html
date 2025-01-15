@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="description" content="Ticket System, list ticket and provide information about it.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Board</title>
+</head>
+<body>
+<main role="main" aria-labelledby="main-heading">
+    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-5" role="list">
+        <div class="col" th:each="state : ${status}" role="listitem">
+            <section class="card text-bg-dark">
+                <div class="card-header"
+                     th:classappend="${state.name() == 'OPEN' ? 'bg-danger' :
+                                 (state.name() == 'IN_PROGRESS' ? 'bg-warning' :
+                                  (state.name() == 'DONE' ? 'bg-success' :
+                                   (state.name() == 'CLOSED' ? 'bg-primary' : 'bg-secondary')))}">
+                    <strong><span class="fs-4" th:text="${state}"></span></strong>
+                </div>
+                <div class="card-body border border-2 rounded-bottom-1 border-top-0 border-1 border-secondary">
+                    <div class="my-2" th:each="ticket : ${tickets}" role="listitem">
+                        <article class="card border rounded text-bg-dark px-3"
+                                 aria-labelledby="ticket-title-${ticket.id}"
+                                 th:attr="onclick=${'showTicketDetails('+ticket.getId()+')'}"
+                                 th:if="${ticket.getStatus() == state}">
+                            <div class="card-header">
+                                <strong id="ticket-title-${ticket.id}">
+                                    <span class="card-title fs-4" th:text="${ticket.title}"></span>
+                                </strong>
+                            </div>
+                            <hr class="my-1">
+                            <div class="card-body">
+                                <h5>Assignee: <span th:text="${ticket.getUserAssignee().getUsername()}"></span></h5>
+                                <h5>Type: <span th:text="${ticket.type}"></span></h5>
+                                <a th:href="@{/ticket/{id}/spentTime(id=${ticket.id})}"
+                                   class="btn btn-primary btn-sm mt-2"
+                                   th:if="${#authorization.getAuthentication().getName() == ticket.userAssignee.username}"
+                                   aria-label="Set time spent of ticket titled [${ticket.title}]">Set Time Spent</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col">
+            <section class="card text-bg-secondary">
+                <div class="card-header">
+                    <span class="fs-4">Summary Details</span>
+                </div>
+                <div class="card-body">
+                    <div class="px-4">
+                        <div class="text-start" th:text="'Open: ' + ${ticketsOpen}"></div>
+                        <hr class="my-2">
+                        <div class="text-start" th:text="'In Progress: ' + ${ticketsInProgress}"></div>
+                        <hr class="my-2">
+                        <div class="text-start" th:text="'Done: ' + ${ticketsDone}"></div>
+                        <hr class="my-2">
+                        <div class="text-start" th:text="'Closed: ' + ${ticketsClosed}"></div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="col px-4 my-3" th:each="ticket : ${tickets}">
+                        <div class="text-start mb-1" th:text="${ticket.getTitle()}"></div>
+                        <div class="progress" role="progressbar" aria-label="Ticket progress" aria-valuemin="0"
+                             aria-valuemax="100">
+                            <div class="progress-bar bg-success"
+                                 th:style="'width:' + ${ticket.getTimeSpent() / ticket.getTimeEstimate() * 100} + '%'">
+                                <span th:text="${ticket.getTimeSpent() / ticket.getTimeEstimate() * 100} + '%'"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <div id="ticketDetails">
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script th:src="@{/script/showTicketDetails.js}"></script>
+</main>
+</body>
+</html>

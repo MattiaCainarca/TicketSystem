@@ -15,7 +15,8 @@
         <p class="fs-1 text-light fw-bold fst-italic" aria-label="Fill the form to add a new ticket">
             Fill the form to add a new ticket
         </p>
-        <form th:action="@{/ticket/new}" method="post" enctype="multipart/form-data" aria-describedby="form-instructions">
+        <form th:action="@{/ticket/new}" method="post" enctype="multipart/form-data"
+              aria-describedby="form-instructions">
             <p id="form-instructions" class="visually-hidden">
                 Complete the required fields and submit the form to create a new ticket.
             </p>
@@ -30,6 +31,38 @@
                 </div>
             </div>
 
+            <!-- Description Input -->
+            <div class="input-group mb-3">
+                <label for="description" class="input-group-text">Description</label>
+                <div class="form-floating text-black">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="description"
+                              name="description"
+                              th:text="${ticket.description}" required aria-required="true"
+                              style="height: 100px"></textarea>
+                    <label for="description">Ticket Description</label>
+                </div>
+            </div>
+
+            <!-- Due Date -->
+            <div class="input-group mb-3">
+                <label for="dueDate" class="input-group-text">Due Date</label>
+                <div class="form-floating text-black">
+                    <input class="form-control" placeholder="Due Date" type="date" id="dueDate" name="dueDate"
+                           th:text="${ticket.dueDate}" required aria-required="true">
+                    <label for="dueDate">Ticket Due Date</label>
+                </div>
+            </div>
+
+            <!-- Time estimate -->
+            <div class="input-group mb-3">
+                <label for="timeEstimate" class="input-group-text">Time Estimate</label>
+                <div class="form-floating text-black">
+                    <input class="form-control" placeholder="Time Estimate" type="number" step="0.1" min="0" id="timeEstimate"
+                           name="timeEstimate" th:text="${ticket.timeEstimate}" required aria-required="true">
+                    <label for="timeEstimate">Ticket Time Estimate</label>
+                </div>
+            </div>
+
             <!-- Type Selector -->
             <div class="input-group mb-3">
                 <label for="type" class="input-group-text">Type</label>
@@ -39,14 +72,13 @@
                 </select>
             </div>
 
-            <!-- Description Input -->
+            <!-- User assignee -->
             <div class="input-group mb-3">
-                <label for="description" class="input-group-text">Description</label>
-                <div class="form-floating text-black">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="description" name="description"
-                              th:text="${ticket.description}" required aria-required="true" style="height: 100px"></textarea>
-                    <label for="description">Ticket Description</label>
-                </div>
+                <label for="userAssignee" class="input-group-text">User Assignee</label>
+                <select class="form-select p-3" id="userAssignee" name="userAssignee" required aria-required="true">
+                    <option value="" disabled selected>Select user to assign</option>
+                    <option th:each="user : ${users}" th:value="${user.getId()}" th:text="${user}"></option>
+                </select>
             </div>
 
             <!-- File Input -->

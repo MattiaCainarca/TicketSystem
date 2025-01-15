@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
 <head>
     <meta charset="UTF-8">
+    <title>Create New Ticket</title>
     <meta name="author" content="Cainarca Mattia">
-    <meta name="description" content="Ticket System, list ticket and provide information about it.">
+    <meta name="description" content="Ticket System, edit ticket.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Details</title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-dark">
 
 <main role="main" aria-labelledby="main-heading">
     <h1 id="main-heading" class="visually-hidden">Ticket Details</h1>
@@ -40,8 +38,18 @@
             </tr>
             <tr>
                 <th scope="row" class="p-3 fs-4">Time Spent</th>
-                <td class="p-4" th:text="${ticket.timeSpent}"></td>
+                <td class="p-4">
+                    <form th:action="@{/ticket/{id}/spentTime(id=${ticket.id})}" method="post" class="d-flex align-items-center justify-content-center">
+                        <input class="w-25 form-control me-2" type="number" name="timeSpent" id="timeSpent"
+                               placeholder="Insert time spent"
+                               th:value="${ticket.timeSpent}" required min="0"  step="0.1" >
+                        <button type="submit" class="btn btn-primary" aria-label="Update Time Spent">
+                            Update
+                        </button>
+                    </form>
+                </td>
             </tr>
+
             <tr>
                 <th scope="row" class="p-3 fs-4">Date</th>
                 <td class="p-4">
@@ -97,24 +105,7 @@
             </tr>
             </tbody>
         </table>
-        <div class="d-flex justify-content-evenly my-3">
-            <a type="button" class="btn btn-primary fs-5" sec:authorize="isAuthenticated()"
-               th:attr="onclick=${'addToWatchlist('+ticket.getId()+')'}" th:if="${!isFollowed}"
-               aria-label="Watchlist this ticket">Watch</a>
-            <a type="button" class="btn btn-success fs-5" sec:authorize="isAuthenticated()"
-               th:if="${isFollowed}"
-               aria-label="Watchlist this ticket">Watched</a>
-            <a type="button" class="btn btn-primary fs-5" sec:authorize="hasRole('ADMIN')"
-               th:href="@{/ticket/{id}/edit(id=${ticket.id})}"
-               aria-label="Edit this ticket">Edit Ticket</a>
-            <a type="button" class="btn btn-primary fs-5" sec:authorize="hasRole('ADMIN')"
-               th:href="@{/ticket/{id}/delete(id=${ticket.id})}"
-               aria-label="Delete this ticket">Delete Ticket</a>
-        </div>
-        <a class="fs-5 btn btn-primary" th:href="@{/}" aria-label="Back to Ticket List">Back to Ticket List</a>
     </div>
-
-    <script th:src="@{/script/addToWatchlist.js}"></script>
 </main>
 
 </body>

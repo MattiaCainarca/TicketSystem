@@ -18,6 +18,7 @@ public class WebSecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
@@ -31,9 +32,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers("/tickets/search").permitAll()
                         .requestMatchers("/ticket/new").authenticated()
+                        .requestMatchers("/ticket/board").authenticated()
                         .requestMatchers("/ticket/*/edit").hasRole("ADMIN")
                         .requestMatchers("/ticket/*/delete").hasRole("ADMIN")
-                         .requestMatchers("/css/**", "/images/**", "/webjars/**", "/fonts/**", "/script/**").permitAll()
+                        .requestMatchers("/css/**", "/images/**", "/webjars/**", "/fonts/**", "/script/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

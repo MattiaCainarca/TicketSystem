@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -86,8 +85,12 @@ public class TicketController {
     }
 
     @GetMapping("/ticket/{id}")
-    public String ticketDetails(@PathVariable("id") Long id, Model model) {
+    public String ticketDetails(@PathVariable("id") Long id, Model model, Authentication authentication) {
         model.addAttribute("ticket", ticketService.findById(id));
+        User user = userService.findByUsername(authentication.getName()).orElse(null);
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+        model.addAttribute("isFollowed", userService.checkTicketWatched(user, ticketService.findById(id)));
         return "ticketDetails";
     }
 
@@ -97,6 +100,18 @@ public class TicketController {
         model.addAttribute("types", Type.values());
         model.addAttribute("users", userService.findAll());
         return "createTicketForm";
+    }
+
+    @GetMapping("/ticket/board")
+    public String ticketsBoard(Model model) {
+        model.addAttribute("tickets", ticketService.findAll());
+        model.addAttribute("ticketsOpen", ticketService.getNumOfTicketsByState(Status.OPEN));
+        model.addAttribute("ticketsInProgress", ticketService.getNumOfTicketsByState(Status.IN_PROGRESS));
+        model.addAttribute("ticketsDone", ticketService.getNumOfTicketsByState(Status.DONE));
+        model.addAttribute("ticketsClosed", ticketService.getNumOfTicketsByState(Status.CLOSED));
+        model.addAttribute("status", Status.values());
+        model.addAttribute("users", userService.findAll());
+        return "board";
     }
 
     @PostMapping("/ticket/new")
@@ -159,11 +174,11 @@ public class TicketController {
     }
 
     @PostMapping("/ticket/{id}/edit")
-    public String editTicket(@PathVariable Long id, @ModelAttribute Ticket ticket, @RequestParam Long userId) {
-        User user = userService.findById(userId);
+    public String editTicket(@PathVariable Long id, @ModelAttribute Ticket ticket, @RequestParam Long userAssignee) {
+        User user = userService.findById(userAssignee);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
-        ticket.setUser(user);
+        ticket.setUserAssignee(user);
         ticketService.update(id, ticket);
         return "redirect:/";
     }
@@ -185,5 +200,65 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Type at least 3 characters to search.");
 
         return ResponseEntity.ok(ticketService.searchTickets(query.trim()));
+    }
+
+    @GetMapping("/ticket/{id}/spentTime")
+    public String spentTimeTicketForm(@PathVariable Long id, Model model) {
+        Ticket ticket = ticketService.findById(id);
+        if (ticket == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found!");
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("types", Type.values());
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("users", userService.findAll());
+        return "timeSpent";
+    }
+
+    @PostMapping("/ticket/{id}/spentTime")
+    public String spentTimeTicket(@PathVariable Long id, @RequestParam float timeSpent) {
+        Ticket ticket = ticketService.findById(id);
+        if (ticket == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found!");
+        ticket.setTimeSpent(timeSpent);
+        ticketService.updateTimeSpent(id, ticket);
+        return "redirect:/";
+    }
+
+    @GetMapping("/ticket/getTicket/{id}")
+    public ResponseEntity<?> searchTicketById(@PathVariable Long id) {
+        return ResponseEntity.ok(ticketService.findById(id));
+    }
+
+    @GetMapping("/ticket/watchlist/{id}")
+    public ResponseEntity<?> watchlistTicket(@PathVariable Long id, Authentication authentication) {
+        User user = userService.findByUsername(authentication.getName()).orElse(null);
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+
+        Ticket ticket = ticketService.findById(id);
+        if (ticket == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found!");
+
+        userService.addToWatchlist(user, ticket);
+        return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/ticket/watchlist")
+    public String watchlist(Model model, Authentication authentication) {
+        User user = userService.findByUsername(authentication.getName()).orElse(null);
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+
+        model.addAttribute("tickets", userService.getWatchlist(user));
+        return "watchlist";
+    }
+
+    @GetMapping("/ticket/numTicketsWatched")
+    public ResponseEntity<?> numTicketsWatched(Authentication authentication) {
+        User user = userService.findByUsername(authentication.getName()).orElse(null);
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+
+        return ResponseEntity.ok(userService.getWatchlist(user).size());
     }
 }

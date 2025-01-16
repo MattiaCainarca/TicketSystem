@@ -35,6 +35,7 @@ public class TicketService {
                     ticket.setDescription(ticketData.getDescription());
                     ticket.setUser(ticketData.getUser());
                     ticket.setStatus(ticketData.getStatus());
+                    ticket.setTags(ticketData.getTags());
                     return ticketRepository.save(ticket);
                 })
                 .orElse(null);

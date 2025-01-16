@@ -76,6 +76,16 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <th scope="row" class="p-3 fs-4">Tags</th>
+                <td class="p-4">
+                    <div th:each="tag : ${ticket.tags}" class="d-flex w-100 p-2 align-items-center">
+                        <p th:text="${tag.getValue()}"></p>
+                        <a type="button" class="btn btn-primary fs-5"
+                           href="#">Add Tag</a>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
         <div class="d-flex justify-content-evenly my-3">

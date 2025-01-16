@@ -42,6 +42,14 @@ public class Ticket {
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<Attachment> attachments = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "tag_ticket",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
+
     public Ticket() {
         this.createdDate = new Date();
         this.status = Status.OPEN;

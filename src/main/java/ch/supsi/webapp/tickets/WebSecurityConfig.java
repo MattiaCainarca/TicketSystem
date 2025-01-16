@@ -31,6 +31,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers("/tickets/search").permitAll()
                         .requestMatchers("/ticket/new").authenticated()
+                        .requestMatchers("/milestone/*").authenticated()
                         .requestMatchers("/ticket/*/edit").hasRole("ADMIN")
                         .requestMatchers("/ticket/*/delete").hasRole("ADMIN")
                          .requestMatchers("/css/**", "/images/**", "/webjars/**", "/fonts/**", "/script/**").permitAll()

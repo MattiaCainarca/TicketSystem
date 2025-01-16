@@ -32,6 +32,8 @@
             <div class="navbar-nav gap-3 w-100">
                 <a class="nav-link" th:href="@{/}">Home</a>
                 <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/ticket/new}">Create a Ticket</a>
+                <a class="nav-link" th:href="@{/milestone}">Milestones</a>
+                <a class="nav-link" th:href="@{/milestone/new}">Create a Milestone</a>
 
                 <div class="text-light ms-auto d-flex flex-row" sec:authorize="!isAuthenticated()">
                     <a class="fs-5 btn btn-primary me-3 d-flex align-items-center justify-content-center"
@@ -67,7 +69,7 @@
 <!-- Footer Fragment -->
 <footer class="bg-dark text-light py-3 mt-auto" role="contentinfo">
     <div class="container w-75 border-top border-secondary text-center pt-2">
-        <small>Copyleft CC-by 2023 by Cainarca</small>
+        <small>Copyleft CC-by 2024 by Cainarca</small>
     </div>
 </footer>
 

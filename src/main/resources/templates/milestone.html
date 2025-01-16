@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<main role="main" aria-labelledby="main-heading">
+    <h1 id="main-heading" class="visually-hidden">Milestone System Main Content</h1>
+    <p class="fs-1 fw-bold" aria-label="Ticket Handler">Milestones Handler</p>
+    <div class="row">
+        <section class="col-lg-9" role="region" aria-labelledby="milestone-heading">
+            <h2 id="tickets-heading" class="visually-hidden">Available Milestones Section</h2>
+            <div class="container text-center mt-3">
+                <div class="d-flex align-items-center flex-row mb-3">
+                    <p class="fs-2 fw-semibold" aria-label="Available Tickets">Available Milestones</p>
+                    <div class="d-flex flex-row align-items-center justify-content-center ms-auto">
+                        <div class="input-group mb-3" role="search">
+                            <label for="search" class="visually-hidden">Search tickets</label>
+                            <input type="text" class="form-control" placeholder="Search into tickets" id="search"
+                                   aria-label="Search into tickets" aria-describedby="searchBtn">
+                            <button class="btn btn-primary" type="button" id="searchBtn" aria-label="Start search">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="fs-4 fst-italic" th:if="${#lists.isEmpty(milestones)}" aria-live="polite">
+                    There isn't any milestone in the list.
+                </p>
+                <div id="ticket-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" role="list">
+                    <div class="col" th:each="milestone : ${milestones}" role="listitem">
+                        <article class="card text-bg-dark" aria-labelledby="ticket-title-${ticket.id}">
+                            <div class="card-header bg-secondary">
+                                <strong id="ticket-title-${ticket.id}">
+                                    #<span class="fs-4" th:text="${milestone.id}"></span>
+                                    <span class="fs-4" th:text="${milestone.title}"></span>
+                                </strong>
+                            </div>
+                            <div class="card-body border rounded-bottom-1 border-top-0 border-1 border-secondary">
+                                <p class="text-truncate"><strong>State: </strong>
+                                    <span id="state" th:if="${!milestone.isCompleted()}">In Progress</span>
+                                    <span th:if="${milestone.isCompleted()}">Completed</span>
+                                </p>
+                                <p class="text-truncate"><strong>Description: </strong>
+                                    <span th:text="${milestone.description}"></span>
+                                </p>
+                                <p class="text-truncate"><strong>Author: </strong>
+                                    <span th:text="${milestone.author.username}"></span>
+                                </p>
+                                <hr>
+                                <div>
+                                    <p><strong>Progress: </strong></p>
+                                    <p th:text="${milestone.progressCalc()} + '%'"></p>
+                                    <div class="progress" role="progressbar" aria-label="Ticket progress" aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        <div class="progress-bar bg-success"
+                                             th:style="'width:' + ${milestone.progressCalc()} + '%'">
+                                            <span th:text="${milestone.progressCalc()} + '%'"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="p-2">
+                                    <div class="d-flex flex-row align-items-center justify-content-between">
+                                        <p><strong>Milestones: </strong></p>
+                                        <a class="btn btn-primary btn-sm ms-2"
+                                           th:href="@{/milestone/{id}/assignTicket(id=${milestone.id})}"
+                                           aria-label="Mark milestone completed [${milestone.title}]">Assign New
+                                            Ticket</a>
+                                    </div>
+                                    <p th:if="${milestone.tickets.isEmpty()}">Milestone doesn't have tickets yet</p>
+                                    <div class="d-flex flex-column mt-2" th:if="${!milestone.tickets.isEmpty()}">
+                                        <div class="d-flex flex-row justify-content-between bg-secondary w-100 py-3 px-3 mt-2 rounded"
+                                             th:each="ticket : ${milestone.getTickets()}" th:value="${ticket.id}">
+                                            <div th:text="${ticket.title}"></div>
+                                            <div th:text="${ticket.status}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="d-flex flex-row align-items-center justify-content-between">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <strong>Due Date: </strong> <span
+                                            th:text="${#dates.format(milestone.dueDate, 'dd-MM-yyyy')}"></span>
+                                    </div>
+                                    <a id="completedBtn" class="btn btn-primary btn-sm ms-2"
+                                       sec:authorize="hasAuthority('ROLE_ADMIN')"
+                                       th:if="${!milestone.completed}"
+                                       th:attr="onclick=${'completed('+milestone.getId()+')'}"
+                                       aria-label="Mark milestone completed [${milestone.title}]">Mark as complete</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script th:src="@{/script/complete.js}" async></script>
+</main>
+</body>
+</html>

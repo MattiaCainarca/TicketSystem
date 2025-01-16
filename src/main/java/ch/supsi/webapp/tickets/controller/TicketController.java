@@ -1,10 +1,7 @@
 package ch.supsi.webapp.tickets.controller;
 
 import ch.supsi.webapp.tickets.model.*;
-import ch.supsi.webapp.tickets.service.CustomerUserDetailService;
-import ch.supsi.webapp.tickets.service.RoleService;
-import ch.supsi.webapp.tickets.service.TicketService;
-import ch.supsi.webapp.tickets.service.UserService;
+import ch.supsi.webapp.tickets.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,13 +24,15 @@ import java.util.Set;
 public class TicketController {
     private final PasswordEncoder passwordEncoder;
     private final TicketService ticketService;
+    private final MilestoneService milestoneService;
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
-    public TicketController(PasswordEncoder passwordEncoder, TicketService ticketService, UserService userService, CustomerUserDetailService customerUserDetailService, RoleService roleService) {
+    public TicketController(PasswordEncoder passwordEncoder, TicketService ticketService, MilestoneService milestoneService, UserService userService, CustomerUserDetailService customerUserDetailService, RoleService roleService) {
         this.passwordEncoder = passwordEncoder;
         this.ticketService = ticketService;
+        this.milestoneService = milestoneService;
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -125,7 +124,7 @@ public class TicketController {
             }
 
         ticketService.update(ticket.getId(), ticket);
-        return "redirect:/";
+        return "redirect:/ticket/" + ticket.getId();
     }
 
     @GetMapping(value = "/ticket/{id}/attachment/{attachmentName}")
@@ -165,7 +164,7 @@ public class TicketController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         ticket.setUser(user);
         ticketService.update(id, ticket);
-        return "redirect:/";
+        return "redirect:/ticket/" + ticket.getId();
     }
 
     @GetMapping("/ticket/{id}/delete")
@@ -185,5 +184,91 @@ public class TicketController {
             return ResponseEntity.badRequest().body("Type at least 3 characters to search.");
 
         return ResponseEntity.ok(ticketService.searchTickets(query.trim()));
+    }
+
+    @GetMapping("/milestone")
+    public String milestone(Model model) {
+        model.addAttribute("milestones", milestoneService.findAll());
+        return "milestone";
+    }
+
+    @GetMapping("/milestone/new")
+    public String createMilestoneForm(Model model) {
+        model.addAttribute("milestone", new Milestone());
+        model.addAttribute("users", userService.findAll());
+        return "createMilestoneForm";
+    }
+
+    @PostMapping("/milestone/new")
+    public String createMilestone(@ModelAttribute Milestone milestone) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userService.findByUsername(username).orElse(null);
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Authenticated user not found!");
+        milestone.setAuthor(user);
+
+        milestoneService.save(milestone);
+
+        return "redirect:/milestone";
+    }
+
+    @GetMapping("/milestone/{id}/completed")
+    public ResponseEntity<?> markComplete(@PathVariable Long id) {
+        Milestone milestone = milestoneService.findById(id);
+        if (milestone == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Milestone not found!");
+
+        milestoneService.complete(milestone);
+        return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/milestone/{id}/assignTicket")
+    public String assignTicket(@PathVariable Long id, Model model) {
+        Milestone milestone = milestoneService.findById(id);
+        if (milestone == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Milestone not found!");
+        model.addAttribute("milestone", milestone);
+        model.addAttribute("tickets", ticketService.findAll());
+        return "addTicketToMilestone";
+    }
+
+    @PostMapping("milestone/{id}/assignTicket")
+    public String assignTicketForm(@PathVariable Long id, @RequestParam Long ticketId) {
+        Milestone milestone = milestoneService.findById(id);
+        if (milestone == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Milestone not found!");
+
+        Ticket ticket = ticketService.findById(ticketId);
+        if (ticket == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found!");
+
+        milestoneService.addTicket(milestone, ticket);
+        milestoneService.update(id, milestone);
+
+        System.out.println(milestone.getTickets().size());
+        return "redirect:/milestone";
+    }
+
+    @GetMapping("/ticket/{id}/changeState")
+    public ResponseEntity<?> changeState(@PathVariable Long id) {
+        Ticket ticket = ticketService.findById(id);
+        if (ticket == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found!");
+        System.out.println(ticket.getStatus());
+
+        if (ticket.getStatus() == Status.OPEN)
+            ticket.setStatus(Status.IN_PROGRESS);
+        else if (ticket.getStatus() == Status.IN_PROGRESS)
+            ticket.setStatus(Status.DONE);
+        else if (ticket.getStatus() == Status.DONE)
+            ticket.setStatus(Status.CLOSED);
+        else
+            ticket.setStatus(Status.OPEN);
+
+        ticketService.update(id, ticket);
+        System.out.println(ticket.getStatus());
+        return ResponseEntity.ok(ticket.getStatus());
     }
 }

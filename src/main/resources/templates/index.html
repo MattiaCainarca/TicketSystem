@@ -55,13 +55,15 @@
                                     <span th:text="${#dates.format(ticket.createdDate, 'dd-MM-yyyy')}"></span>
                                 </p>
                                 <p><strong>Status: </strong>
-                                    <span th:text="${ticket.status}"></span>
+                                    <span id="state" th:text="${ticket.status}"></span>
                                 </p>
                                 <p class="text-truncate"><strong>Description: </strong>
                                     <span th:text="${ticket.description}"></span>
                                 </p>
                                 <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="btn btn-primary btn-sm"
                                    aria-label="View details of ticket titled [${ticket.title}]">Open Detail</a>
+                                <a th:attr="onclick=${'changeState('+ticket.getId()+')'}" class="btn btn-primary btn-sm"
+                                   aria-label="Change state of ticket titled [${ticket.title}]">Change State</a>
                             </div>
                         </article>
                     </div>
@@ -75,6 +77,7 @@
         </aside>
     </div>
     <script th:src="@{/script/search.js}"></script>
+    <script th:src="@{/script/changeState.js}"></script>
 </main>
 
 </body>

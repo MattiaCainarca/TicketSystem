@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<main role="main" aria-labelledby="main-heading">
+    <h1 id="main-heading" class="visually-hidden">Create New milestone Form</h1>
+    <div class="container-fluid w-50">
+        <p class="fs-1 text-light fw-bold fst-italic" aria-label="Fill the form to add a new milestone">
+            Fill the form to add a new milestone
+        </p>
+        <form th:action="@{/milestone/new}" method="post" aria-describedby="form-instructions">
+            <p id="form-instructions" class="visually-hidden">
+                Complete the required fields and submit the form to create a new milestone.
+            </p>
+
+            <!-- Title Input -->
+            <div class="input-group mb-3">
+                <label for="title" class="input-group-text">Title</label>
+                <div class="form-floating text-black">
+                    <input type="text" class="form-control" id="title" name="title" th:value="${milestone.title}"
+                           placeholder="Title" required aria-required="true" aria-describedby="title-help">
+                    <label for="title">Milestone Title</label>
+                </div>
+            </div>
+
+            <!-- Description Input -->
+            <div class="input-group mb-3">
+                <label for="description" class="input-group-text">Description</label>
+                <div class="form-floating text-black">
+                    <textarea class="form-control" placeholder="Insert the description of milestone" id="description"
+                              name="description"
+                              th:text="${milestone.description}" required aria-required="true" style="height: 100px"></textarea>
+                    <label for="description">Milestone Description</label>
+                </div>
+            </div>
+
+            <!-- Due Date Input -->
+            <div class="input-group mb-3">
+                <label for="dueDate" class="input-group-text">Due Date</label>
+                <div class="form-floating text-black">
+                    <input class="form-control" placeholder="Due Date" type="date" id="dueDate" name="dueDate"
+                           th:text="${milestone.dueDate}" required aria-required="true">
+                    <label for="dueDate">Milestone Due Date</label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary fs-5" value="CreateMilestone" aria-label="Submit new Milestone">
+                Create Milestone
+            </button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

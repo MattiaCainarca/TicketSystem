@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{master :: layout(_, ~{::meta}, ~{::main/content()})}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Cainarca Mattia">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<main role="main" aria-labelledby="main-heading">
+    <form th:action="@{/milestone/{id}/assignTicket(id=${milestone.id})}" method="post" aria-describedby="form-instructions">
+        <p class="fs-1 text-light fw-bold fst-italic">
+            Select a ticket from the list below to add into the milestone.
+        </p>
+
+        <!-- User Selector -->
+        <div class="d-flex flex-row justify-content-center">
+            <div class="w-25 input-group mb-3">
+                <label for="ticket" class="input-group-text">Tickets</label>
+                <select class="form-select p-3" id="ticket" name="ticketId" required aria-required="true">
+                    <option th:each="ticket : ${tickets}" th:value="${ticket.id}" th:text="${ticket.title}"></option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary fs-5" value="addTicket" aria-label="Add new ticket">
+            Add ticket
+        </button>
+        <button type="reset" class="btn btn-secondary fs-5" value="cancel" aria-label="Add tickets cancel">
+            Cancel
+        </button>
+    </form>
+</main>
+</body>
+</html>

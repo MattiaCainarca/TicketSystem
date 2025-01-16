@@ -1,5 +1,6 @@
 package ch.supsi.webapp.tickets.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,6 +56,7 @@ public class Ticket {
     private float timeSpent;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Attachment> attachments = new ArrayList<>();
 
     public Ticket() {
